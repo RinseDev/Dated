@@ -4,7 +4,7 @@ Pre-Depends: firmware (>= 7.0)
 Depends: mobilesubstrate
 Version: 0.1
 Architecture: iphoneos-arm
-Description: Adds dates to Messages timestamps.
+Description: Adds dates to all Messages timestamps.
 Maintainer: Julian Weiss <insanjmail@insanj.com>
 Author: Julian (insanj) Weiss
 Section: Tweaks

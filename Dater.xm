@@ -1,70 +1,32 @@
 #import <UIKit/UIKit.h>
 
-@interface CKTimestamp : NSObject {
-    NSAttributedString *_attributedTranscriptText;
-}
-
-@property(readonly) NSAttributedString *attributedTranscriptText;
-
-+ (id)thePastDateFormatter;
-+ (id)thisWeekRelativeDateFormatter;
-+ (id)thisYearDateFormatter;
-+ (id)timestampWithDate:(NSDate *)arg1 message:(id)arg2; // CKMessage
-- (NSAttributedString *)attributedTranscriptText;
-
+@interface CKAutoupdatingDateFormatter : NSDateFormatter
+- (id)initWithTemplate:(id)arg1;
 @end
 
-%hook CKTimestamp
+%hook CKAutoupdatingDateFormatter
 
-+ (id)thePastDateFormatter {
-	NSLog(@"[thepastdateformatter] %@", %orig);
-	return %orig();
-}
+// CKAutoupdatingDateFormatter templates don't strictly follow NSDateFormatter,
+// instead, they steal away the components specified in the template, and arrage
+// them based on the system localization (the translation follows %orig(XXX)).
 
-+ (id)thisWeekRelativeDateFormatter {
-	NSLog(@"[thisweekrelativedateformatter] %@", %orig);
-	return %orig();
-}
+// Templates come in four variants:
+//	EEEE (@"Saturday")
+//	EEEEjm (@"Saturday 11:42 AM")
+//	jm (@"11:42 AM")
 
-+ (id)thisYearDateFormatter {
-	NSLog(@"[thisyeardateformatter] %@", %orig);
-	return %orig();
-}
+// Unfortunately, because it'd be inconvenient (mostly for the user) to make
+// the drawers larger, sometimes the "AM"/"PM" will be cut off. C'est la vie!
 
-- (NSAttributedString *)attributedTranscriptText {
-	NSLog(@"[attributedtranscriptext] %@", %orig);
-	return %orig();
-}
+- (id)initWithTemplate:(id)arg1 {
+	if ([arg1 isEqualToString:@"jm"]) {
+		NSLog(@"[Dater] Heard initialization attempt on per-message dateFormatter, replacing with long form...");
+		return %orig(@"Mdjmm"); // @"3/15, 11:44 AM"
+	}
 
-%end
-
-@interface CKUIBehavior : NSObject
-- (float)timestampBodyLeading;
-- (float)timestampBodyLeadingFraction:(float)arg1;
-- (id)timestampDateFormatter;
-- (UIEdgeInsets)timestampTranscriptInsets;
-@end
-
-%hook CKUIBehavior
-
-- (float)timestampBodyLeading {
-	NSLog(@"[timestampbodyleading] %f", %orig);
-	return %orig();
-}
-
-- (float)timestampBodyLeadingFraction:(float)arg1 {
-	NSLog(@"[timestampbodyleadingfraction %f] %f", arg1, %orig);
-	return %orig();
-}
-
-- (id)timestampDateFormatter {
-	NSLog(@"[timestampdateformatter] %@", %orig);
-	return %orig();
-}
-
-- (UIEdgeInsets)timestampTranscriptInsets {
-	NSLog(@"[timestamptrnscripinsets] %@", NSStringFromUIEdgeInsets(%orig));
-	return %orig();
+	else {
+		return %orig(arg1);
+	}
 }
 
 %end
