@@ -3,6 +3,8 @@ Dater
 
 Adds dates to all Messages timestamps.
 
+![Gif of it in action](https://f.cloud.github.com/assets/951011/2428761/195b5756-ac5b-11e3-8fa4-ce091b70db6f.gif)
+
 ---------------------------------------
 [Creative Commons Attribution-NonCommercial 3.0 United States License](http://creativecommons.org/licenses/by-nc/3.0/us/) as of 2014:
 

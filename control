@@ -2,7 +2,7 @@ Package: com.insanj.dater
 Name: Dater
 Pre-Depends: firmware (>= 7.0)
 Depends: mobilesubstrate
-Version: 0.1
+Version: 1.0
 Architecture: iphoneos-arm
 Description: Adds dates to all Messages timestamps.
 Maintainer: Julian Weiss <insanjmail@insanj.com>
