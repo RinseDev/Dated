@@ -55,13 +55,13 @@
 
 %hook CKTranscriptBalloonCell
 
-- (void)layoutSubviewsForDrawer {
+- (void)layoutSubviews {
 	%orig();
 
 	CGRect expanded = self.drawerLabel.frame;
 	expanded.size.width = [self.drawerLabel.text sizeWithFont:self.drawerLabel.font].width;
 
-	NSLog(@"[Dater] Expanding drawer from %@ to %@ to fit %@...", NSStringFromCGRect(self.drawerLabel.frame), NSStringFromCGRect(expanded), self.drawerLabel.text);
+	// NSLog(@"[Dater] Expanding drawer from %@ to %@ to fit %@...", NSStringFromCGRect(self.drawerLabel.frame), NSStringFromCGRect(expanded), self.drawerLabel.text);
 	[self.drawerLabel setFrame:expanded];
 }
 
