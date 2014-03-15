@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 
+/**************************** Timestamp Hooks ****************************/
 @interface CKAutoupdatingDateFormatter : NSDateFormatter
 - (id)initWithTemplate:(id)arg1;
 @end
@@ -15,9 +16,6 @@
 //	EEEEjm (@"Saturday 11:42 AM")
 //	jm (@"11:42 AM")
 
-// Unfortunately, because it'd be inconvenient (mostly for the user) to make
-// the drawers larger, sometimes the "AM"/"PM" will be cut off. C'est la vie!
-
 - (id)initWithTemplate:(id)arg1 {
 	if ([arg1 isEqualToString:@"jm"]) {
 		NSLog(@"[Dater] Heard initialization attempt on per-message dateFormatter, replacing with long form...");
@@ -27,6 +25,44 @@
 	else {
 		return %orig(arg1);
 	}
+}
+
+%end
+
+/*************************** Drawer Size Hooks ***************************/
+
+
+@interface CKTranscriptBalloonCell
+
+@property(copy) NSAttributedString *drawerAttributedText;
+@property(retain) UILabel *drawerLabel;
+
+- (id)balloonView;
+- (void)configureForRow:(id)arg1;
+- (void)configureForRowObject:(id)arg1;
+- (NSAttributedString *)drawerAttributedText;
+- (UILabel *)drawerLabel;
+- (id)initWithFrame:(CGRect)arg1;
+- (void)layoutSubviewsForContents;
+- (void)layoutSubviewsForDrawer;
+- (void)setBalloonView:(id)arg1;
+- (void)setDrawerAttributedText:(NSAttributedString *)arg1;
+- (void)setDrawerLabel:(UILabel *)arg1;
+- (void)setDrawerTextChanged:(BOOL)arg1;
+- (void)setDrawerWasVisible:(BOOL)arg1;
+
+@end
+
+%hook CKTranscriptBalloonCell
+
+- (void)layoutSubviewsForDrawer {
+	%orig();
+
+	CGRect expanded = self.drawerLabel.frame;
+	expanded.size.width = [self.drawerLabel.text sizeWithFont:self.drawerLabel.font].width;
+
+	NSLog(@"[Dater] Expanding drawer from %@ to %@ to fit %@...", NSStringFromCGRect(self.drawerLabel.frame), NSStringFromCGRect(expanded), self.drawerLabel.text);
+	[self.drawerLabel setFrame:expanded];
 }
 
 %end
