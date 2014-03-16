@@ -1,6 +1,7 @@
 #import <UIKit/UIKit.h>
 
 /**************************** Timestamp Hooks ****************************/
+
 @interface CKAutoupdatingDateFormatter : NSDateFormatter
 - (id)initWithTemplate:(id)arg1;
 @end
@@ -29,23 +30,38 @@
 
 %end
 
-/*************************** Drawer Size Hooks ***************************/
+/************************* UILabel Custom Class *************************/
 
+@interface DRAutoupdatingDateLabel : UILabel
+@end
+
+@implementation DRAutoupdatingDateLabel
+
+- (void)setAttributedText:(id)text {
+	NSLog(@"[Dater] Autoupdating size of %@ to fit expanded contents of %@.", self, text);
+
+	CGRect expanded = self.frame;
+	expanded.size.width = [self.text sizeWithFont:self.font].width;
+	[self setFrame:expanded];
+
+	[super setAttributedText:text];
+}
+
+@end
+
+/*************************** Drawer Size Hooks ***************************/
 
 @interface CKTranscriptBalloonCell
 
 @property(copy) NSAttributedString *drawerAttributedText;
 @property(retain) UILabel *drawerLabel;
 
-- (id)balloonView;
 - (void)configureForRow:(id)arg1;
 - (void)configureForRowObject:(id)arg1;
-- (NSAttributedString *)drawerAttributedText;
 - (UILabel *)drawerLabel;
 - (id)initWithFrame:(CGRect)arg1;
 - (void)layoutSubviewsForContents;
 - (void)layoutSubviewsForDrawer;
-- (void)setBalloonView:(id)arg1;
 - (void)setDrawerAttributedText:(NSAttributedString *)arg1;
 - (void)setDrawerLabel:(UILabel *)arg1;
 - (void)setDrawerTextChanged:(BOOL)arg1;
@@ -55,14 +71,10 @@
 
 %hook CKTranscriptBalloonCell
 
-- (void)layoutSubviews {
-	%orig();
-
-	CGRect expanded = self.drawerLabel.frame;
-	expanded.size.width = [self.drawerLabel.text sizeWithFont:self.drawerLabel.font].width;
-
-	// NSLog(@"[Dater] Expanding drawer from %@ to %@ to fit %@...", NSStringFromCGRect(self.drawerLabel.frame), NSStringFromCGRect(expanded), self.drawerLabel.text);
-	[self.drawerLabel setFrame:expanded];
+- (void)setDrawerLabel:(UILabel *)arg1 {
+	NSLog(@"[Dater] Reassigning drawer label %@ to be a DRAutoupdatingDateLabel.", arg1);
+	DRAutoupdatingDateLabel *label = (DRAutoupdatingDateLabel *) arg1;
+	%orig(label);
 }
 
 %end
