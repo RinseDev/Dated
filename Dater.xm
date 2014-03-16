@@ -30,25 +30,6 @@
 
 %end
 
-/************************* UILabel Custom Class *************************/
-
-@interface DRAutoupdatingDateLabel : UILabel
-@end
-
-@implementation DRAutoupdatingDateLabel
-
-- (void)setAttributedText:(id)text {
-	NSLog(@"[Dater] Autoupdating size of %@ to fit expanded contents of %@.", self, text);
-
-	CGRect expanded = self.frame;
-	expanded.size.width = [self.text sizeWithFont:self.font].width;
-	[self setFrame:expanded];
-
-	[super setAttributedText:text];
-}
-
-@end
-
 /*************************** Drawer Size Hooks ***************************/
 
 @interface CKTranscriptBalloonCell
@@ -71,10 +52,16 @@
 
 %hook CKTranscriptBalloonCell
 
-- (void)setDrawerLabel:(UILabel *)arg1 {
-	NSLog(@"[Dater] Reassigning drawer label %@ to be a DRAutoupdatingDateLabel.", arg1);
-	DRAutoupdatingDateLabel *label = (DRAutoupdatingDateLabel *) arg1;
-	%orig(label);
+- (UILabel *)drawerLabel {
+	UILabel *label = %orig();
+
+	CGFloat requiredWidth =  [label.text sizeWithFont:label.font].width;
+	if (requiredWidth - label.frame.size.width > 0.0) {
+		NSLog(@"[Dater] Autoupdating size of %@ to fit expanded contents of %@.", label, label.text);
+		[label setFrame:CGRectMake(label.frame.origin.x, label.frame.origin.y, requiredWidth, label.frame.size.height)];
+	}
+
+	return label;
 }
 
 %end
