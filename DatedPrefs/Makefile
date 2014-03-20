@@ -6,7 +6,8 @@ include theos/makefiles/common.mk
 BUNDLE_NAME = DatedPrefs
 DatedPrefs_FILES = DatedPrefs.xm
 DatedPrefs_INSTALL_PATH = /Library/PreferenceBundles
-DatedPrefs_FRAMEWORKS = UIKit Twitter
+DatedPrefs_FRAMEWORKS = UIKit Twitter CoreFoundation
+DatedPrefs_PRIVATE_FRAMEWORKS = Preferences ChatKit
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

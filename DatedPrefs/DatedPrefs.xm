@@ -1,13 +1,18 @@
-#import "DDPrefs.h"
+#import "DatedPrefs.h"
 
 #define URL_ENCODE(string) (__bridge NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)(string), NULL, CFSTR(":/=,!$& '()*+;[]@#?"), kCFStringEncodingUTF8)
 #define DD_TINTCOLOR [UIColor colorWithRed:46/255.0 green:204/255.0 blue:64/255.0 alpha:1.0]
+
+static void dated_refreshText(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo){
+	NSLog(@"[Dated] Sending notification to refresh text preview...");
+	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"DDRefresh" object:nil];
+}
 
 @implementation DDPrefsListController
 
 - (NSArray *)specifiers{
 	if(!_specifiers)
-		_specifiers = [self loadSpecifiersFromPlistName:@"DatedPrefs" target:self];
+		_specifiers = [[self loadSpecifiersFromPlistName:@"DatedPrefs" target:self] retain];
 
 	return _specifiers;
 }
@@ -15,6 +20,7 @@
 - (void)loadView{
 	[super loadView];
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareTapped:)];
+	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &dated_refreshText, CFSTR("com.insanj.dated/RefreshText"), NULL, 0);
 }
 
 - (void)viewDidLoad{
@@ -88,15 +94,58 @@
 
 @end
 
-@implementation DDListItemsController
+@implementation DDPreviewTextCell
 
-- (void)viewWillAppear:(BOOL)animated{
-	self.navigationController.navigationBar.tintColor = DD_TINTCOLOR;
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+	if((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])){
+		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(dated_refreshDateText) name:@"DDRefresh" object:nil];
+		self.textLabel.text = [self dated_previewDateText];
+	}
+
+	return self;
 }
 
-- (void)viewWillDisappear:(BOOL)animated{
-	[super viewWillDisappear:animated];
-	self.navigationController.navigationBar.tintColor = nil;
+- (NSString *)dated_previewDateText {
+	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
+
+	NSString *components = @"";
+	if ([[settings objectForKey:@"year"] boolValue]) {
+		components = [components stringByAppendingString:@"y"];
+	}
+
+	if (![[settings objectForKey:@"month"] boolValue]) {
+		components = [components stringByAppendingString:@"M"];
+	}
+
+	if (![[settings objectForKey:@"day"] boolValue]) {
+		components = [components stringByAppendingString:@"d"];
+	}
+
+	if (![[settings objectForKey:@"hour"] boolValue]) {
+		components = [components stringByAppendingString:@"H"];
+	}
+
+	if (![[settings objectForKey:@"minute"] boolValue]) {
+		components = [components stringByAppendingString:@"m"];
+	}
+
+	if ([[settings objectForKey:@"second"] boolValue]) {
+		components = [components stringByAppendingString:@"s"];
+	}
+
+	CKAutoupdatingDateFormatter *formatter = [[[CKAutoupdatingDateFormatter alloc] initWithTemplate:components] autorelease];
+	return [formatter stringFromDate:[NSDate date]];
+}
+
+- (void)dated_refreshDateText {
+	NSString *newDateText = [self dated_previewDateText];
+	NSLog(@"[Dated] Refreshed preview text to %@.", newDateText);
+	self.textLabel.text = newDateText;
+}
+
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[super dealloc];
 }
 
 @end

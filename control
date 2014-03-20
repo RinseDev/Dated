@@ -3,7 +3,7 @@ Name: Dated
 Replaces: com.insanj.dater
 Pre-Depends: firmware (>= 7.0)
 Depends: mobilesubstrate
-Version: 1.0.1
+Version: 1.0
 Architecture: iphoneos-arm
 Description: Configurable message timestamps.
 Maintainer: Julian Weiss <insanjmail@insanj.com>
