@@ -1,7 +1,7 @@
-Dater
+Dated
 =======================
 
-Adds dates to all Messages timestamps.
+Configurable message timestamps.
 
 ![Gif of it in action](https://f.cloud.github.com/assets/951011/2428761/195b5756-ac5b-11e3-8fa4-ce091b70db6f.gif)
 

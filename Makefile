@@ -4,12 +4,14 @@ ARCHS = armv7 arm64
 
 include theos/makefiles/common.mk
 
-TWEAK_NAME = Dater
-Dater_FILES = Dater.xm
-Dater_FRAMEWORKS = UIKit
-Dater_PRIVATE_FRAMEWORKS = ChatKit
+TWEAK_NAME = Dated
+Dated_FILES = Dated.xm
+Dated_FRAMEWORKS = UIKit
+Dated_PRIVATE_FRAMEWORKS = ChatKit
 
 include $(THEOS_MAKE_PATH)/tweak.mk
+SUBPROJECTS += DatedPrefs
+include $(THEOS_MAKE_PATH)/aggregate.mk
 
 internal-after-install::
 	install.exec "killall -9 backboardd"

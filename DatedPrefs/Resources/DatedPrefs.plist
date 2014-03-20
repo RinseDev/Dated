@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>items</key>
+	<array>
+
+        <dict>
+            <key>cell</key>            <string>PSGroupCell</string>
+        </dict>
+
+		<dict>
+			<key>cell</key>				<string>PSSwitchCell</string>
+			<key>defaults</key>			<string>com.insanj.dated</string>
+            <key>label</key>               <string>Enabled</string>
+			<key>key</key> 				<string>disabled</string>
+            <key>negate</key>              <true/>
+            <key>default</key> 			<false/>
+		</dict>
+
+        <dict>
+            <key>cell</key>            <string>PSGroupCell</string>
+            <key>label</key>		   <string>Preview</string>
+        </dict>
+
+		<dict>
+			<key>cell</key>            <string>PSGroupCell</string>
+			<key>label</key>		   <string>Components</string>
+			<key>footerText</key>      <string>Pick which components should be represented in each timestamp.</string>
+		</dict>
+
+        <dict>
+			<key>cell</key>	          <string>PSGroupCell</string>
+			<key>label</key>             <string>Credits</string>
+            <key>footerAlignment</key>   <integer>1</integer>
+            <key>footerText</key>		<string>Thanks for using Dated (1.0) by Julian Weiss. Please send all feedback directly from Cydia.</string>
+		</dict>
+
+        <dict>
+            <key>cell</key> 		 <string>PSButtonCell</string>
+            <key>label</key> 	    <string>Developer (@insanj)</string>
+            <key>icon</key> 		 <string>twitter.png</string>
+            <key>action</key> 	   <string>insanj</string>
+        </dict>
+
+        <dict>
+            <key>cell</key> 		 <string>PSButtonCell</string>
+            <key>label</key> 	    <string>Source (Github)</string>
+            <key>icon</key> 		 <string>safari.png</string>
+            <key>action</key> 	   <string>website</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>            <string>PSGroupCell</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>				<string>PSGroupCell</string>
+            <key>footerAlignment</key> 	<integer>1</integer>
+            <key>footerText</key>		  <string>© 2014 Julian Weiss</string>
+        </dict>
+
+	</array>
+	<key>title</key>	<string>Dated</string>
+</dict>
+
+</plist>
