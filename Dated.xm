@@ -19,8 +19,38 @@
 
 - (id)initWithTemplate:(id)arg1 {
 	if ([arg1 isEqualToString:@"jm"]) {
+		NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
+		NSString *components = @"";
+		if ([[settings objectForKey:@"year"] boolValue]) {
+			components = [components stringByAppendingString:@"y"];
+		}
+
+		if (![[settings objectForKey:@"month"] boolValue]) {
+			components = [components stringByAppendingString:@"M"];
+		}
+
+		if (![[settings objectForKey:@"day"] boolValue]) {
+			components = [components stringByAppendingString:@"d"];
+		}
+
+		if (![[settings objectForKey:@"hour"] boolValue]) {
+			components = [components stringByAppendingString:@"H"];
+		}
+
+		if (![[settings objectForKey:@"minute"] boolValue]) {
+			components = [components stringByAppendingString:@"m"];
+		}
+
+		if ([[settings objectForKey:@"second"] boolValue]) {
+			components = [components stringByAppendingString:@"s"];
+		}
+
+		if ([[settings objectForKey:@"ampm"] boolValue]) {
+			components = [components stringByAppendingString:@"j"];
+		}
+
 		NSLog(@"[Dater] Heard initialization attempt on per-message dateFormatter, replacing with long form...");
-		return %orig(@"Mdjmm"); // @"3/15, 11:44 AM"
+		return %orig(components); // default is @"Mdjmm" -> @"3/15, 11:44 AM"
 	}
 
 	else {

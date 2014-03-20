@@ -95,6 +95,16 @@
         </dict>
 
         <dict>
+            <key>cell</key>				<string>PSSwitchCell</string>
+            <key>defaults</key>			<string>com.insanj.dated</string>
+            <key>label</key>               <string>AM/PM</string>
+            <key>key</key> 				<string>ampm</string>
+            <key>negate</key>              <true/>
+            <key>default</key> 			<false/>
+            <key>PostNotification</key>    <string>com.insanj.dated/RefreshText</string>
+        </dict>
+
+        <dict>
 			<key>cell</key>	          <string>PSGroupCell</string>
 			<key>label</key>             <string>About</string>
             <key>footerAlignment</key>   <integer>1</integer>

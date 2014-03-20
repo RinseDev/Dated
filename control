@@ -1,6 +1,5 @@
 Package: com.insanj.dated
 Name: Dated
-Replaces: com.insanj.dater
 Pre-Depends: firmware (>= 7.0)
 Depends: mobilesubstrate
 Version: 1.0

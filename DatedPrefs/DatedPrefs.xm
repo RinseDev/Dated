@@ -4,7 +4,6 @@
 #define DD_TINTCOLOR [UIColor colorWithRed:46/255.0 green:204/255.0 blue:64/255.0 alpha:1.0]
 
 static void dated_refreshText(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo){
-	NSLog(@"[Dated] Sending notification to refresh text preview...");
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"DDRefresh" object:nil];
 }
 
@@ -97,7 +96,7 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 @implementation DDPreviewTextCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-	if((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])){
+	if((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])){
 		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(dated_refreshDateText) name:@"DDRefresh" object:nil];
 		self.textLabel.text = [self dated_previewDateText];
 	}
@@ -133,13 +132,16 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 		components = [components stringByAppendingString:@"s"];
 	}
 
+	if (![[settings objectForKey:@"ampm"] boolValue]) {
+		components = [components stringByAppendingString:@"j"];
+	}
+
 	CKAutoupdatingDateFormatter *formatter = [[[CKAutoupdatingDateFormatter alloc] initWithTemplate:components] autorelease];
 	return [formatter stringFromDate:[NSDate date]];
 }
 
 - (void)dated_refreshDateText {
 	NSString *newDateText = [self dated_previewDateText];
-	NSLog(@"[Dated] Refreshed preview text to %@.", newDateText);
 	self.textLabel.text = newDateText;
 }
 
