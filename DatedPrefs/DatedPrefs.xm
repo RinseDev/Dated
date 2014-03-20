@@ -62,10 +62,6 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 	}
 }
 
-- (void)apply {
-	[[[%c(SBApplicationController) sharedInstance] applicationWithPid:@"MobileSMS"] suspend];
-}
-
 - (void)insanj {
 	[self twitter:@"insanj"];
 }
@@ -141,7 +137,10 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 }
 
 - (void)dated_refreshDateText {
+	[[[%c(SBApplicationController) sharedInstance] applicationWithPid:@"MobileSMS"] suspend];
 	NSString *newDateText = [self dated_previewDateText];
+
+	NSLog(@"[Dated] Refreshing preview text label (%@), and suspending Messages app (to apply)...", newDateText);
 	self.textLabel.text = newDateText;
 }
 

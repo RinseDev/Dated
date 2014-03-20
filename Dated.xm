@@ -1,4 +1,7 @@
 #import <UIKit/UIKit.h>
+#import <CoreGraphics/CoreGraphics.h>
+
+#define CKDRAWERWIDTH 78.232
 
 /**************************** Timestamp Hooks ****************************/
 
@@ -45,7 +48,7 @@
 			components = [components stringByAppendingString:@"s"];
 		}
 
-		if ([[settings objectForKey:@"ampm"] boolValue]) {
+		if (![[settings objectForKey:@"ampm"] boolValue]) {
 			components = [components stringByAppendingString:@"j"];
 		}
 
@@ -74,7 +77,7 @@
 
 - (void)configureForRow:(id)arg1;
 - (void)configureForRowObject:(id)arg1;
-- (UILabel *)drawerLabel; //[1]
+- (UILabel *)drawerLabel; // [1]
 - (id)initWithFrame:(CGRect)arg1;
 - (void)layoutSubviewsForContents; // [2]
 - (void)layoutSubviewsForDrawer; // [3]
@@ -88,14 +91,25 @@
 %hook CKTranscriptBalloonCell
 
 - (void)layoutSubviews {
+	%log;
 	%orig();
 
 	UILabel *label = self.drawerLabel;
-	CGFloat requiredWidth =  [label.text sizeWithFont:label.font].width;
-	if (requiredWidth - label.frame.size.width > 0.0) {
-		// NSLog(@"[Dater] Autoupdating size of %@ to fit expanded contents of %@.", label, label.text);
-		[label setFrame:CGRectMake(label.frame.origin.x, label.frame.origin.y, requiredWidth, label.frame.size.height)];
-	}
+
+	CGFloat requiredWidth =  [label.text sizeWithFont:label.font].width; // Will be invalidated by CKUIBehavior if too large
+	[label setFrame:CGRectMake(label.frame.origin.x, label.frame.origin.y, requiredWidth, label.frame.size.height)];
+
+	label.minimumScaleFactor = 0.5;
+	label.adjustsFontSizeToFitWidth = YES;
+
+
+	// CGSize requiredSize = [label.text boundingRectWithSize:CGSizeMake(CKDRAWERWIDTH, INFINITY) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{ NSFontAttributeName : label.font } context:nil].size;
+
+/*	if ([label.text sizeWithFont:label.font].width > label.frame.size.width) {
+		CGRect expanded = label.frame;
+		expanded.size.width = CKDRAWERWIDTH;
+		[label setFrame:expanded];
+	}*/
 }
 
 %end
