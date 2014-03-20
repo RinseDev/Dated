@@ -91,25 +91,15 @@
 %hook CKTranscriptBalloonCell
 
 - (void)layoutSubviews {
-	%log;
 	%orig();
 
 	UILabel *label = self.drawerLabel;
 
-	CGFloat requiredWidth =  [label.text sizeWithFont:label.font].width; // Will be invalidated by CKUIBehavior if too large
-	[label setFrame:CGRectMake(label.frame.origin.x, label.frame.origin.y, requiredWidth, label.frame.size.height)];
+	CGFloat requiredWidth =  [label.text sizeWithFont:label.font].width; // Will be invalidated by CKUIBehavior if too large.
+	[label setFrame:CGRectMake(label.frame.origin.x, label.frame.origin.y, fmin(requiredWidth, CKDRAWERWIDTH), label.frame.size.height)];
 
 	label.minimumScaleFactor = 0.5;
 	label.adjustsFontSizeToFitWidth = YES;
-
-
-	// CGSize requiredSize = [label.text boundingRectWithSize:CGSizeMake(CKDRAWERWIDTH, INFINITY) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{ NSFontAttributeName : label.font } context:nil].size;
-
-/*	if ([label.text sizeWithFont:label.font].width > label.frame.size.width) {
-		CGRect expanded = label.frame;
-		expanded.size.width = CKDRAWERWIDTH;
-		[label setFrame:expanded];
-	}*/
 }
 
 %end

@@ -133,11 +133,16 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 	}
 
 	CKAutoupdatingDateFormatter *formatter = [[[CKAutoupdatingDateFormatter alloc] initWithTemplate:components] autorelease];
-	return [formatter stringFromDate:[NSDate date]];
+	return [formatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:0]];
 }
 
 - (void)dated_refreshDateText {
-	[[[%c(SBApplicationController) sharedInstance] applicationWithPid:@"MobileSMS"] suspend];
+	//[[[%c(SBApplicationController) sharedInstance] applicationWithPid:@"MobileSMS"] suspend];
+//	SBApplication *app = [[%c(SBApplicationController) sharedInstance] applicationWithDisplayIdentifier:@"com.apple.MobileSMS"];
+//	if (app.pid > 0)
+//	    kill(app.pid, SIGKILL);
+
+	system("killall -9 MobileSMS");
 	NSString *newDateText = [self dated_previewDateText];
 
 	NSLog(@"[Dated] Refreshing preview text label (%@), and suspending Messages app (to apply)...", newDateText);

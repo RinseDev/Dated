@@ -16,11 +16,13 @@
 @end
 
 @interface SBApplication : UIApplication
+- (int)pid;
 @end
 
 @interface SBApplicationController
 + (id)sharedInstance;
-- (SBApplication *)applicationWithPid:(NSString *)arg1;
+- (SBApplication *)applicationWithPid:(int)pid;
+- (SBApplication *)applicationWithDisplayIdentifier:(NSString *)displayIdentifier;
 @end
 
 @interface DDPrefsListController : PSListController
