@@ -4,6 +4,7 @@ Dated
 Configurable message timestamps.
 
 ![Gif of it in action](https://f.cloud.github.com/assets/951011/2428761/195b5756-ac5b-11e3-8fa4-ce091b70db6f.gif)
+[![1.0 Commercial](https://f.cloud.github.com/assets/951011/2494261/cb0089f0-b2bd-11e3-9db9-514c5ae2221c.png)](https://www.youtube.com/watch?v=ddY3jPExNkQ)
 
 ---------------------------------------
 [Creative Commons Attribution-NonCommercial 3.0 United States License](http://creativecommons.org/licenses/by-nc/3.0/us/) as of 2014:
