@@ -1,7 +1,12 @@
+// Dated (commercial tweak)
+// Created by Julian (insanj) Weiss 2014
+// Source and license available on Git
+
 #import "DatedPrefs.h"
 
 #define URL_ENCODE(string) (__bridge NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)(string), NULL, CFSTR(":/=,!$& '()*+;[]@#?"), kCFStringEncodingUTF8)
 #define DD_TINTCOLOR [UIColor colorWithRed:46/255.0 green:204/255.0 blue:64/255.0 alpha:1.0]
+#define MODERN_IOS ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
 
 static void dated_refreshText(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo){
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"DDRefresh" object:nil];
@@ -132,8 +137,16 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 		components = [components stringByAppendingString:@"j"];
 	}
 
-	CKAutoupdatingDateFormatter *formatter = [[[CKAutoupdatingDateFormatter alloc] initWithTemplate:components] autorelease];
-	return [formatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:-468650652]];
+	if (MODERN_IOS) {
+		CKAutoupdatingDateFormatter *formatter = [[[CKAutoupdatingDateFormatter alloc] initWithTemplate:components] autorelease];
+		return [formatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:-468650652]];
+	}
+
+	else {
+		NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+		[formatter setDateFormat:components];
+		return [formatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:-468650652]];
+	}
 }
 
 - (void)dated_refreshDateText {

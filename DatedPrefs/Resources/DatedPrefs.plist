@@ -19,6 +19,14 @@
 		</dict>
 
         <dict>
+            <key>cell</key>				<string>PSSwitchCell</string>
+            <key>defaults</key>			<string>com.insanj.dated</string>
+            <key>label</key>               <string>Show Above All Messages</string>
+            <key>key</key> 				<string>allmessages</string>
+            <key>default</key> 			<false/>
+        </dict>
+
+        <dict>
             <key>cell</key>            <string>PSGroupCell</string>
             <key>label</key>		   <string>Preview</string>
             <key>footerText</key>      <string>Previews are generated using Apple's own ChatKit framework templates. The format and localization should be automatic.</string>
@@ -108,7 +116,7 @@
 			<key>cell</key>	          <string>PSGroupCell</string>
 			<key>label</key>             <string>About</string>
             <key>footerAlignment</key>   <integer>1</integer>
-            <key>footerText</key>		<string>Thanks for using Dated (1.0) by Julian Weiss. Please send all feedback directly from Cydia.&#xA;&#xA;© 2014 Julian Weiss</string>
+            <key>footerText</key>		<string>Thanks for using Dated (1.1) by Julian Weiss. Please send all feedback directly from Cydia.&#xA;&#xA;© 2014 Julian Weiss</string>
 		</dict>
 
         <dict>
