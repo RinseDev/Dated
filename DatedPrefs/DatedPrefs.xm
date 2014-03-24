@@ -15,7 +15,7 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 @implementation DDPrefsListController
 
 - (NSArray *)specifiers{
-	if(!_specifiers)
+	if (!_specifiers)
 		_specifiers = [[self loadSpecifiersFromPlistName:@"DatedPrefs" target:self] retain];
 
 	return _specifiers;
@@ -32,11 +32,7 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-    [(UITableView *)self.view deselectRowAtIndexPath:((UITableView *)self.view).indexPathForSelectedRow animated:YES];
-
-	self.view.tintColor =
-	self.navigationController.navigationBar.tintColor =
-	[UISwitch appearanceWhenContainedIn:self.class, nil].onTintColor = DD_TINTCOLOR;
+	self.view.tintColor = self.navigationController.navigationBar.tintColor = [UISwitch appearanceWhenContainedIn:self.class, nil].onTintColor = DD_TINTCOLOR;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -92,12 +88,17 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://github.com/insanj/dated"]];
 }
 
+- (void)dealloc {
+	CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.insanj.dated/RefreshText"), NULL);
+	[super dealloc];
+}
+
 @end
 
 @implementation DDPreviewTextCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-	if((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])){
+	if ((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) {
 		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(dated_refreshDateText) name:@"DDRefresh" object:nil];
 		self.textLabel.text = [self dated_previewDateText];
 	}
