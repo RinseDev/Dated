@@ -6,11 +6,14 @@
 
 /**************************** Global Converstion Methods ****************************/
 
-@implementation DDAutoupdatingDateFormatter
+%group Shared
+
+%hook NSObject
 
 //static NSString *dated_previewDateComponents()
-+ (NSString *)templateStringFromSavedComponents {
+%new + (NSString *)templateStringFromSavedComponents {
 	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
+	NSLog(@"[Dated] Creating template string from saved preferences file: %@", settings);
 
 	NSString *year = [[settings objectForKey:@"year"] boolValue] ? @"y" : @"";
 	NSString *month = ![[settings objectForKey:@"month"] boolValue] ? @"M" : @"";
@@ -23,7 +26,9 @@
 }
 
 // static NSString *dated_previewDateWithComponents(NSDate *date, NSString *components)
-+ (NSString *)stringFromDate:(NSDate *)date usingTemplate:(NSString *)components {
+%new + (NSString *)stringFromDate:(NSDate *)date usingTemplate:(NSString *)components {
+	NSLog(@"[Dated] Creating string from date %@ using components string: %@", date, components);
+
 	if (MODERN_IOS) {
 		CKAutoupdatingDateFormatter *formatter = [[[objc_getClass("CKAutoupdatingDateFormatter") alloc] initWithTemplate:components] autorelease];
 		return [formatter stringFromDate:date];
@@ -36,7 +41,9 @@
 	}
 }
 
-@end
+%end
+
+%end // %group Shared
 
 /**************************** Timestamp Hooks ****************************/
 
@@ -56,7 +63,7 @@
 - (id)initWithTemplate:(id)arg1 {
 	if ([arg1 isEqualToString:@"jm"]) {
 		NSLog(@"[Dater] Heard initialization attempt on per-message dateFormatter, replacing with long form...");
-		return %orig([DDAutoupdatingDateFormatter templateStringFromSavedComponents]); // default is @"Mdjmm" -> @"3/15, 11:44 AM"
+		return %orig([NSObject templateStringFromSavedComponents]); // default is @"Mdjmm" -> @"3/15, 11:44 AM"
 	}
 
 	else {
@@ -99,7 +106,7 @@
 
 - (void)setDate:(NSDate *)date {
 	UILabel *label = MSHookIvar<UILabel *>(self, "_label");
-	[label setText:[DDAutoupdatingDateFormatter stringFromDate:date usingTemplate:[DDAutoupdatingDateFormatter templateStringFromSavedComponents]]];
+	[label setText:[NSObject stringFromDate:date usingTemplate:[NSObject templateStringFromSavedComponents]]];
 }
 
 %end
@@ -117,6 +124,8 @@
 
 
 %ctor {
+	%init(Shared);
+
 	if (MODERN_IOS) {
 		NSLog(@"[Dated] Injecting modern hooks into ChatKit...");
 		%init(Modern);

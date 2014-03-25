@@ -10,7 +10,7 @@
 #define MODERN_IOS ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
 
 // Global
-@interface DDAutoupdatingDateFormatter : NSObject
+@interface NSObject (Dated)
 + (NSString *)templateStringFromSavedComponents;
 + (NSString *)stringFromDate:(NSDate *)date usingTemplate:(NSString *)components;
 @end

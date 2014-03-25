@@ -125,7 +125,7 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) {
 		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(dated_refreshDateText) name:@"DDRefresh" object:nil];
-		self.textLabel.text = [%c(DDAutoupdatingDateFormatter) stringFromDate:[NSDate dateWithTimeIntervalSince1970:-468650652] usingTemplate:[%c(DDAutoupdatingDateFormatter) templateStringFromSavedComponents]];
+		self.textLabel.text = [NSObject stringFromDate:[NSDate dateWithTimeIntervalSince1970:-468650652] usingTemplate:[NSObject templateStringFromSavedComponents]];
 			}
 
 	return self;
@@ -133,7 +133,7 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 
 - (void)dated_refreshDateText {
 	system("killall -9 MobileSMS");
-	NSString *newDateText = [%c(DDAutoupdatingDateFormatter) stringFromDate:[NSDate dateWithTimeIntervalSince1970:-468650652] usingTemplate:[%c(DDAutoupdatingDateFormatter) templateStringFromSavedComponents]];
+	NSString *newDateText = [NSObject stringFromDate:[NSDate dateWithTimeIntervalSince1970:-468650652] usingTemplate:[NSObject templateStringFromSavedComponents]];
 	NSLog(@"[Dated] Refreshing preview text label (%@), and killing Messages app to apply...", newDateText);
 	self.textLabel.text = newDateText;
 }
