@@ -6,11 +6,28 @@
 
 #define URL_ENCODE(string) (__bridge NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)(string), NULL, CFSTR(":/=,!$& '()*+;[]@#?"), kCFStringEncodingUTF8)
 #define DD_TINTCOLOR [UIColor colorWithRed:46/255.0 green:204/255.0 blue:64/255.0 alpha:1.0]
-#define MODERN_IOS ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
+
+/**************************** Global Notif Listener ****************************/
 
 static void dated_refreshText(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo){
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"DDRefresh" object:nil];
 }
+
+/**************************** NSString Category ****************************/
+
+@interface NSString (Dated)
+- (BOOL)notEmpty;
+@end
+
+@implementation NSString (Dated)
+
+- (BOOL)notEmpty{
+	return self && [self length] > 0;
+}
+
+@end
+
+/**************************** Preferences Controller ****************************/
 
 @implementation DDPrefsListController
 
@@ -32,14 +49,20 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-	self.view.tintColor = self.navigationController.navigationBar.tintColor = [UISwitch appearanceWhenContainedIn:self.class, nil].onTintColor = DD_TINTCOLOR;
+	if (MODERN_IOS) {
+		self.view.tintColor =
+		self.navigationController.navigationBar.tintColor =
+		[UISwitch appearanceWhenContainedIn:self.class, nil].onTintColor = DD_TINTCOLOR;
+	}
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
 
-	self.view.tintColor = nil;
-	self.navigationController.navigationBar.tintColor = nil;
+	if (MODERN_IOS) {
+		self.view.tintColor = nil;
+		self.navigationController.navigationBar.tintColor = nil;
+	}
 }
 
 - (void)shareTapped:(UIBarButtonItem *)sender {
@@ -95,65 +118,22 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 
 @end
 
+/**************************** Custom Preview PSTableCell ****************************/
+
 @implementation DDPreviewTextCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) {
 		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(dated_refreshDateText) name:@"DDRefresh" object:nil];
-		self.textLabel.text = [self dated_previewDateText];
-	}
+		self.textLabel.text = [%c(DDAutoupdatingDateFormatter) stringFromDate:[NSDate dateWithTimeIntervalSince1970:-468650652] usingTemplate:[%c(DDAutoupdatingDateFormatter) templateStringFromSavedComponents]];
+			}
 
 	return self;
 }
 
-- (NSString *)dated_previewDateText {
-	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
-
-	NSString *components = @"";
-	if ([[settings objectForKey:@"year"] boolValue]) {
-		components = [components stringByAppendingString:@"y"];
-	}
-
-	if (![[settings objectForKey:@"month"] boolValue]) {
-		components = [components stringByAppendingString:@"M"];
-	}
-
-	if (![[settings objectForKey:@"day"] boolValue]) {
-		components = [components stringByAppendingString:@"d"];
-	}
-
-	if (![[settings objectForKey:@"hour"] boolValue]) {
-		components = [components stringByAppendingString:@"H"];
-	}
-
-	if (![[settings objectForKey:@"minute"] boolValue]) {
-		components = [components stringByAppendingString:@"m"];
-	}
-
-	if ([[settings objectForKey:@"second"] boolValue]) {
-		components = [components stringByAppendingString:@"s"];
-	}
-
-	if (![[settings objectForKey:@"ampm"] boolValue]) {
-		components = [components stringByAppendingString:@"j"];
-	}
-
-	if (MODERN_IOS) {
-		CKAutoupdatingDateFormatter *formatter = [[[CKAutoupdatingDateFormatter alloc] initWithTemplate:components] autorelease];
-		return [formatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:-468650652]];
-	}
-
-	else {
-		NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
-		[formatter setDateFormat:components];
-		return [formatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:-468650652]];
-	}
-}
-
 - (void)dated_refreshDateText {
 	system("killall -9 MobileSMS");
-	NSString *newDateText = [self dated_previewDateText];
-
+	NSString *newDateText = [%c(DDAutoupdatingDateFormatter) stringFromDate:[NSDate dateWithTimeIntervalSince1970:-468650652] usingTemplate:[%c(DDAutoupdatingDateFormatter) templateStringFromSavedComponents]];
 	NSLog(@"[Dated] Refreshing preview text label (%@), and killing Messages app to apply...", newDateText);
 	self.textLabel.text = newDateText;
 }

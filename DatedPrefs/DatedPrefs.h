@@ -6,24 +6,7 @@
 #import <Twitter/TWTweetComposeViewController.h>
 #import <UIKit/UIKit.h>
 #import <Foundation/NSDistributedNotificationCenter.h>
-
-@interface UIApplication (Private)
-- (void)suspend;
-@end
-
-@interface CKAutoupdatingDateFormatter : NSDateFormatter
-- (id)initWithTemplate:(NSString *)arg1;
-@end
-
-@interface SBApplication : UIApplication
-- (int)pid;
-@end
-
-@interface SBApplicationController
-+ (id)sharedInstance;
-- (SBApplication *)applicationWithPid:(int)pid;
-- (SBApplication *)applicationWithDisplayIdentifier:(NSString *)displayIdentifier;
-@end
+#import "../Dated.h"
 
 @interface DDPrefsListController : PSListController
 @end

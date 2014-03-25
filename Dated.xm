@@ -4,6 +4,40 @@
 
 #import "Dated.h"
 
+/**************************** Global Converstion Methods ****************************/
+
+@implementation DDAutoupdatingDateFormatter
+
+//static NSString *dated_previewDateComponents()
++ (NSString *)templateStringFromSavedComponents {
+	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
+
+	NSString *year = [[settings objectForKey:@"year"] boolValue] ? @"y" : @"";
+	NSString *month = ![[settings objectForKey:@"month"] boolValue] ? @"M" : @"";
+	NSString *day = ![[settings objectForKey:@"day"] boolValue] ? @"d" : @"";
+	NSString *hour = ![[settings objectForKey:@"hour"] boolValue] ? @"H" : @"";
+	NSString *min = ![[settings objectForKey:@"minute"] boolValue] ? @"m" : @"";
+	NSString *sec = [[settings objectForKey:@"second"] boolValue] ? @"s" : @"";
+	NSString *ampm = ![[settings objectForKey:@"ampm"] boolValue] ? @"j" : @"";
+	return [NSString stringWithFormat:@"%@%@%@%@%@%@%@", year, month, day, hour, min, sec, ampm];
+}
+
+// static NSString *dated_previewDateWithComponents(NSDate *date, NSString *components)
++ (NSString *)stringFromDate:(NSDate *)date usingTemplate:(NSString *)components {
+	if (MODERN_IOS) {
+		CKAutoupdatingDateFormatter *formatter = [[[objc_getClass("CKAutoupdatingDateFormatter") alloc] initWithTemplate:components] autorelease];
+		return [formatter stringFromDate:date];
+	}
+
+	else {
+		NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+		[formatter setDateFormat:[NSDateFormatter dateFormatFromTemplate:components options:0 locale:[NSLocale currentLocale]]];
+		return [formatter stringFromDate:date];
+	}
+}
+
+@end
+
 /**************************** Timestamp Hooks ****************************/
 
 %group Modern
@@ -21,38 +55,8 @@
 
 - (id)initWithTemplate:(id)arg1 {
 	if ([arg1 isEqualToString:@"jm"]) {
-		NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
-		NSString *components = @"";
-		if ([[settings objectForKey:@"year"] boolValue]) {
-			components = [components stringByAppendingString:@"y"];
-		}
-
-		if (![[settings objectForKey:@"month"] boolValue]) {
-			components = [components stringByAppendingString:@"M"];
-		}
-
-		if (![[settings objectForKey:@"day"] boolValue]) {
-			components = [components stringByAppendingString:@"d"];
-		}
-
-		if (![[settings objectForKey:@"hour"] boolValue]) {
-			components = [components stringByAppendingString:@"H"];
-		}
-
-		if (![[settings objectForKey:@"minute"] boolValue]) {
-			components = [components stringByAppendingString:@"m"];
-		}
-
-		if ([[settings objectForKey:@"second"] boolValue]) {
-			components = [components stringByAppendingString:@"s"];
-		}
-
-		if (![[settings objectForKey:@"ampm"] boolValue]) {
-			components = [components stringByAppendingString:@"j"];
-		}
-
 		NSLog(@"[Dater] Heard initialization attempt on per-message dateFormatter, replacing with long form...");
-		return %orig(components); // default is @"Mdjmm" -> @"3/15, 11:44 AM"
+		return %orig([DDAutoupdatingDateFormatter templateStringFromSavedComponents]); // default is @"Mdjmm" -> @"3/15, 11:44 AM"
 	}
 
 	else {
@@ -94,41 +98,8 @@
 %hook CKTimestampCell
 
 - (void)setDate:(NSDate *)date {
-	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
-	NSString *components = @"";
-	if ([[settings objectForKey:@"year"] boolValue]) {
-		components = [components stringByAppendingString:@"y"];
-	}
-
-	if (![[settings objectForKey:@"month"] boolValue]) {
-		components = [components stringByAppendingString:@"M"];
-	}
-
-	if (![[settings objectForKey:@"day"] boolValue]) {
-		components = [components stringByAppendingString:@"d"];
-	}
-
-	if (![[settings objectForKey:@"hour"] boolValue]) {
-		components = [components stringByAppendingString:@"H"];
-	}
-
-	if (![[settings objectForKey:@"minute"] boolValue]) {
-		components = [components stringByAppendingString:@"m"];
-	}
-
-	if ([[settings objectForKey:@"second"] boolValue]) {
-		components = [components stringByAppendingString:@"s"];
-	}
-
-	if (![[settings objectForKey:@"ampm"] boolValue]) {
-		components = [components stringByAppendingString:@"j"];
-	}
-
-	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-	[formatter setDateFormat:components];
 	UILabel *label = MSHookIvar<UILabel *>(self, "_label");
-
-	[label setText:[formatter stringFromDate:date]];
+	[label setText:[DDAutoupdatingDateFormatter stringFromDate:date usingTemplate:[DDAutoupdatingDateFormatter templateStringFromSavedComponents]]];
 }
 
 %end

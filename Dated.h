@@ -4,12 +4,21 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import <objc/runtime.h>
 
 #define CKDRAWERWIDTH 78.232
 #define MODERN_IOS ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
 
-@interface CKAutoupdatingDateFormatter : NSDateFormatter
+// Global
+@interface DDAutoupdatingDateFormatter : NSObject
++ (NSString *)templateStringFromSavedComponents;
++ (NSString *)stringFromDate:(NSDate *)date usingTemplate:(NSString *)components;
+@end
+
+// iOS 7
+@interface CKAutoupdatingDateFormatter
 - (id)initWithTemplate:(id)arg1;
+- (id)stringFromDate:(id)arg1;
 @end
 
 @interface CKTranscriptBalloonCell
