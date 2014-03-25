@@ -27,12 +27,12 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 	NSLog(@"[Dated] Creating string from date %@ using components string: %@", date, components);
 
 	if (MODERN_IOS) {
-		CKAutoupdatingDateFormatter *formatter = [[[objc_getClass("CKAutoupdatingDateFormatter") alloc] initWithTemplate:components] autorelease];
+		CKAutoupdatingDateFormatter *formatter = [[objc_getClass("CKAutoupdatingDateFormatter") alloc] initWithTemplate:components];
 		return [formatter stringFromDate:date];
 	}
 
 	else {
-		NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+		NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 		[formatter setDateFormat:[NSDateFormatter dateFormatFromTemplate:components options:0 locale:[NSLocale currentLocale]]];
 		return [formatter stringFromDate:date];
 	}
@@ -41,7 +41,7 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 /**************************** Global Notif Listener ****************************/
 
 static void dated_refreshApp(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"DDRefreshApp" object:nil];
+	system("killall -9 MobileSMS");
 }
 
 static void dated_refreshPreview(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
@@ -49,7 +49,7 @@ static void dated_refreshPreview(CFNotificationCenterRef center, void *observer,
 }
 
 static void dated_refreshAll(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"DDRefreshApp" object:nil];
+	system("killall -9 MobileSMS");
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"DDRefreshPreview" object:nil];
 }
 
@@ -73,7 +73,7 @@ static void dated_refreshAll(CFNotificationCenterRef center, void *observer, CFS
 
 - (NSArray *)specifiers{
 	if (!_specifiers)
-		_specifiers = [[self loadSpecifiersFromPlistName:@"DatedPrefs" target:self] retain];
+		_specifiers = [self loadSpecifiersFromPlistName:@"DatedPrefs" target:self];
 
 	return _specifiers;
 }
@@ -83,7 +83,7 @@ static void dated_refreshAll(CFNotificationCenterRef center, void *observer, CFS
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareTapped:)];
 	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &dated_refreshApp, CFSTR("com.insanj.dated/RefreshApp"), NULL, 0);
 CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &dated_refreshPreview, CFSTR("com.insanj.dated/RefreshPreview"), NULL, 0);
-CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &dated_refreshPreview, CFSTR("com.insanj.dated/RefreshAll"), NULL, 0);
+CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &dated_refreshAll, CFSTR("com.insanj.dated/RefreshAll"), NULL, 0);
 }
 
 - (void)viewDidLoad{
@@ -105,6 +105,12 @@ CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NUL
 		self.view.tintColor = nil;
 		self.navigationController.navigationBar.tintColor = nil;
 	}
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+	CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.insanj.dated/RefreshApp"), NULL);
+CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.insanj.dated/RefreshPreview"), NULL);
+CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.insanj.dated/RefreshAll"), NULL);
 }
 
 - (void)shareTapped:(UIBarButtonItem *)sender {
@@ -153,11 +159,6 @@ CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NUL
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://github.com/insanj/dated"]];
 }
 
-- (void)dealloc {
-	CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.insanj.dated/RefreshText"), NULL);
-	[super dealloc];
-}
-
 @end
 
 /**************************** Custom Preview PSTableCell ****************************/
@@ -166,7 +167,6 @@ CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NUL
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) {
-		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshApp) name:@"DDRefreshApp" object:nil];
 		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshPreview) name:@"DDRefreshPreview" object:nil];
 
 		self.textLabel.text = dated_stringFromDateUsingTemplate([NSDate dateWithTimeIntervalSince1970:-468650652], dated_templateStringFromSavedComponents());
@@ -175,19 +175,10 @@ CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NUL
 	return self;
 }
 
-- (void)refreshApp {
-	system("killall -9 MobileSMS");
-}
-
 - (void)refreshPreview {
 	NSString *newDateText = dated_stringFromDateUsingTemplate([NSDate dateWithTimeIntervalSince1970:-468650652], dated_templateStringFromSavedComponents());
 	NSLog(@"[Dated] Refreshing preview text label (%@), and killing Messages app to apply...", newDateText);
 	self.textLabel.text = newDateText;
-}
-
-- (void)dealloc {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[super dealloc];
 }
 
 @end

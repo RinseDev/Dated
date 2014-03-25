@@ -39,6 +39,10 @@
 
 @end
 
+@interface IMChat
+- (BOOL)shouldAppendTimestampAfterChatItem:(id)arg1 andBeforeChatItem:(id)arg2;
+@end
+
 // iOS 6
 @interface CKTimestampCell {
     UILabel *_label;

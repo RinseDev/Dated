@@ -52,7 +52,7 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 
 - (id)initWithTemplate:(id)arg1 {
 	if ([arg1 isEqualToString:@"jm"]) {
-		NSLog(@"[Dater] Heard initialization attempt on per-message dateFormatter, replacing with long form...");
+		NSLog(@"[Dated] Heard initialization attempt on per-message dateFormatter, replacing with long form...");
 		return %orig(dated_templateStringFromSavedComponents()); // default is @"Mdjmm" -> @"3/15, 11:44 AM"
 	}
 
@@ -84,6 +84,26 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 	label.minimumScaleFactor = 0.5;
 	label.adjustsFontSizeToFitWidth = YES;
 }
+
+%end
+
+%hook IMChat
+
+- (BOOL)shouldAppendDatestampAfterChatItem:(id)arg1 andBeforeChatItem:(id)arg2 {
+	NSLog(@"should append date!!!1 %@", %orig ? @"YES" : @"NO");
+	%log;
+	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
+	return %orig() || [[settings objectForKey:@"allmessages"] boolValue];
+}
+
+- (BOOL)shouldAppendTimestampAfterChatItem:(id)arg1 andBeforeChatItem:(id)arg2 {
+	NSLog(@"should append time!!!1 %@", %orig ? @"YES" : @"NO");
+	%log;
+	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
+	return %orig() || [[settings objectForKey:@"allmessages"] boolValue];
+}
+
+//- (id)_timeStampForChatItem:(id)arg1 atIndex:(unsigned int)arg2;
 
 %end
 

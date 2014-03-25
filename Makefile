@@ -7,7 +7,7 @@ include theos/makefiles/common.mk
 TWEAK_NAME = Dated
 Dated_FILES = Dated.xm
 Dated_FRAMEWORKS = UIKit CoreGraphics
-Dated_PRIVATE_FRAMEWORKS = ChatKit
+Dated_PRIVATE_FRAMEWORKS = ChatKit IMCore
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 SUBPROJECTS += DatedPrefs

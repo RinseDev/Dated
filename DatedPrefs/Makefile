@@ -8,6 +8,7 @@ DatedPrefs_FILES = DatedPrefs.xm
 DatedPrefs_INSTALL_PATH = /Library/PreferenceBundles
 DatedPrefs_FRAMEWORKS = UIKit Twitter CoreFoundation
 DatedPrefs_PRIVATE_FRAMEWORKS = Preferences ChatKit
+DatedPrefs_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 
