@@ -7,6 +7,37 @@
 #define URL_ENCODE(string) (__bridge NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)(string), NULL, CFSTR(":/=,!$& '()*+;[]@#?"), kCFStringEncodingUTF8)
 #define DD_TINTCOLOR [UIColor colorWithRed:46/255.0 green:204/255.0 blue:64/255.0 alpha:1.0]
 
+/**************************** Global Converstion Methods ****************************/
+
+NSString *dated_templateStringFromSavedComponents() {
+	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
+	NSLog(@"[Dated] Creating template string from saved preferences file: %@", settings);
+
+	NSString *year = [[settings objectForKey:@"year"] boolValue] ? @"y" : @"";
+	NSString *month = ![[settings objectForKey:@"month"] boolValue] ? @"M" : @"";
+	NSString *day = ![[settings objectForKey:@"day"] boolValue] ? @"d" : @"";
+	NSString *hour = ![[settings objectForKey:@"hour"] boolValue] ? @"H" : @"";
+	NSString *min = ![[settings objectForKey:@"minute"] boolValue] ? @"m" : @"";
+	NSString *sec = [[settings objectForKey:@"second"] boolValue] ? @"s" : @"";
+	NSString *ampm = ![[settings objectForKey:@"ampm"] boolValue] ? @"j" : @"";
+	return [NSString stringWithFormat:@"%@%@%@%@%@%@%@", year, month, day, hour, min, sec, ampm];
+}
+
+NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) {
+	NSLog(@"[Dated] Creating string from date %@ using components string: %@", date, components);
+
+	if (MODERN_IOS) {
+		CKAutoupdatingDateFormatter *formatter = [[[objc_getClass("CKAutoupdatingDateFormatter") alloc] initWithTemplate:components] autorelease];
+		return [formatter stringFromDate:date];
+	}
+
+	else {
+		NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+		[formatter setDateFormat:[NSDateFormatter dateFormatFromTemplate:components options:0 locale:[NSLocale currentLocale]]];
+		return [formatter stringFromDate:date];
+	}
+}
+
 /**************************** Global Notif Listener ****************************/
 
 static void dated_refreshText(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo){
@@ -125,7 +156,7 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) {
 		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(dated_refreshDateText) name:@"DDRefresh" object:nil];
-		self.textLabel.text = [NSObject stringFromDate:[NSDate dateWithTimeIntervalSince1970:-468650652] usingTemplate:[NSObject templateStringFromSavedComponents]];
+		self.textLabel.text = dated_stringFromDateUsingTemplate([NSDate dateWithTimeIntervalSince1970:-468650652], dated_templateStringFromSavedComponents());
 			}
 
 	return self;
@@ -133,7 +164,7 @@ static void dated_refreshText(CFNotificationCenterRef center, void *observer, CF
 
 - (void)dated_refreshDateText {
 	system("killall -9 MobileSMS");
-	NSString *newDateText = [NSObject stringFromDate:[NSDate dateWithTimeIntervalSince1970:-468650652] usingTemplate:[NSObject templateStringFromSavedComponents]];
+	NSString *newDateText = dated_stringFromDateUsingTemplate([NSDate dateWithTimeIntervalSince1970:-468650652], dated_templateStringFromSavedComponents());
 	NSLog(@"[Dated] Refreshing preview text label (%@), and killing Messages app to apply...", newDateText);
 	self.textLabel.text = newDateText;
 }

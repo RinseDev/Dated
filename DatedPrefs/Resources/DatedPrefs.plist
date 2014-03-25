@@ -7,7 +7,7 @@
 
         <dict>
             <key>cell</key>            <string>PSGroupCell</string>
-            <key>footerText</key>      <string>Stamping all messages will force every message to have a timestamp appear above it.</string>
+            <key>footerText</key>      <string>Stamping all messages will force every message to have a timestamp appear above.</string>
         </dict>
 
 		<dict>
@@ -117,7 +117,7 @@
 			<key>cell</key>	          <string>PSGroupCell</string>
 			<key>label</key>             <string>About</string>
             <key>footerAlignment</key>   <integer>1</integer>
-            <key>footerText</key>		<string>Thanks for using Dated (1.1) by Julian Weiss. Please send all feedback directly from Cydia.&#xA;&#xA;© 2014 Julian Weiss</string>
+            <key>footerText</key>		<string>Thanks for using Dated (1.1) by Julian Weiss. Please send all feedback directly from Cydia.</string>
 		</dict>
 
         <dict>
@@ -132,6 +132,12 @@
             <key>label</key> 	    <string>Source (Github)</string>
             <key>icon</key> 		 <string>safari.png</string>
             <key>action</key> 	   <string>website</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>	          <string>PSGroupCell</string>
+            <key>footerAlignment</key>   <integer>1</integer>
+            <key>footerText</key>		<string>© 2014 Julian Weiss</string>
         </dict>
 
 	</array>

@@ -6,12 +6,7 @@
 
 /**************************** Global Converstion Methods ****************************/
 
-%group Shared
-
-%hook NSObject
-
-//static NSString *dated_previewDateComponents()
-%new + (NSString *)templateStringFromSavedComponents {
+NSString *dated_templateStringFromSavedComponents() {
 	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
 	NSLog(@"[Dated] Creating template string from saved preferences file: %@", settings);
 
@@ -25,8 +20,7 @@
 	return [NSString stringWithFormat:@"%@%@%@%@%@%@%@", year, month, day, hour, min, sec, ampm];
 }
 
-// static NSString *dated_previewDateWithComponents(NSDate *date, NSString *components)
-%new + (NSString *)stringFromDate:(NSDate *)date usingTemplate:(NSString *)components {
+NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) {
 	NSLog(@"[Dated] Creating string from date %@ using components string: %@", date, components);
 
 	if (MODERN_IOS) {
@@ -40,10 +34,6 @@
 		return [formatter stringFromDate:date];
 	}
 }
-
-%end
-
-%end // %group Shared
 
 /**************************** Timestamp Hooks ****************************/
 
@@ -63,7 +53,7 @@
 - (id)initWithTemplate:(id)arg1 {
 	if ([arg1 isEqualToString:@"jm"]) {
 		NSLog(@"[Dater] Heard initialization attempt on per-message dateFormatter, replacing with long form...");
-		return %orig([NSObject templateStringFromSavedComponents]); // default is @"Mdjmm" -> @"3/15, 11:44 AM"
+		return %orig(dated_templateStringFromSavedComponents()); // default is @"Mdjmm" -> @"3/15, 11:44 AM"
 	}
 
 	else {
@@ -106,7 +96,7 @@
 
 - (void)setDate:(NSDate *)date {
 	UILabel *label = MSHookIvar<UILabel *>(self, "_label");
-	[label setText:[NSObject stringFromDate:date usingTemplate:[NSObject templateStringFromSavedComponents]]];
+	[label setText:dated_stringFromDateUsingTemplate(date, dated_templateStringFromSavedComponents())];
 }
 
 %end
@@ -124,8 +114,6 @@
 
 
 %ctor {
-	%init(Shared);
-
 	if (MODERN_IOS) {
 		NSLog(@"[Dated] Injecting modern hooks into ChatKit...");
 		%init(Modern);
