@@ -17,6 +17,7 @@
 			<key>key</key> 				<string>disabled</string>
             <key>negate</key>              <true/>
             <key>default</key> 			<false/>
+            <key>PostNotification</key>    <string>com.insanj.dated/RefreshApp</string>
 		</dict>
 
         <dict>
@@ -25,6 +26,7 @@
             <key>label</key>               <string>Stamp All Messages</string>
             <key>key</key> 				<string>allmessages</string>
             <key>default</key> 			<false/>
+            <key>PostNotification</key>    <string>com.insanj.dated/RefreshApp</string>
         </dict>
 
         <dict>
@@ -51,7 +53,7 @@
             <key>label</key>               <string>Year</string>
             <key>key</key> 				<string>year</string>
             <key>default</key> 			<false/>
-            <key>PostNotification</key>    <string>com.insanj.dated/RefreshText</string>
+            <key>PostNotification</key>    <string>com.insanj.dated/RefreshAll</string>
         </dict>
 
         <dict>
@@ -61,7 +63,7 @@
             <key>key</key> 				<string>month</string>
             <key>negate</key>              <true/>
             <key>default</key> 			<false/>
-            <key>PostNotification</key>    <string>com.insanj.dated/RefreshText</string>
+            <key>PostNotification</key>    <string>com.insanj.dated/RefreshAll</string>
         </dict>
 
         <dict>
@@ -71,7 +73,7 @@
             <key>key</key> 				<string>day</string>
             <key>negate</key>              <true/>
             <key>default</key> 			<false/>
-            <key>PostNotification</key>    <string>com.insanj.dated/RefreshText</string>
+            <key>PostNotification</key>    <string>com.insanj.dated/RefreshAll</string>
         </dict>
 
         <dict>
@@ -81,7 +83,7 @@
             <key>key</key> 				<string>hour</string>
             <key>negate</key>              <true/>
             <key>default</key> 			<false/>
-            <key>PostNotification</key>    <string>com.insanj.dated/RefreshText</string>
+            <key>PostNotification</key>    <string>com.insanj.dated/RefreshAll</string>
         </dict>
 
         <dict>
@@ -91,7 +93,7 @@
             <key>key</key> 				<string>minute</string>
             <key>negate</key>              <true/>
             <key>default</key> 			<false/>
-            <key>PostNotification</key>    <string>com.insanj.dated/RefreshText</string>
+            <key>PostNotification</key>    <string>com.insanj.dated/RefreshAll</string>
         </dict>
 
         <dict>
@@ -100,7 +102,7 @@
             <key>label</key>               <string>Second</string>
             <key>key</key> 				<string>second</string>
             <key>default</key> 			<false/>
-            <key>PostNotification</key>    <string>com.insanj.dated/RefreshText</string>
+            <key>PostNotification</key>    <string>com.insanj.dated/RefreshAll</string>
         </dict>
 
         <dict>
@@ -110,7 +112,7 @@
             <key>key</key> 				<string>ampm</string>
             <key>negate</key>              <true/>
             <key>default</key> 			<false/>
-            <key>PostNotification</key>    <string>com.insanj.dated/RefreshText</string>
+            <key>PostNotification</key>    <string>com.insanj.dated/RefreshAll</string>
         </dict>
 
         <dict>
