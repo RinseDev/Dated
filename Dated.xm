@@ -87,23 +87,15 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 
 %end
 
-%hook IMChat
+%hook CKIMMessage
 
-- (BOOL)shouldAppendDatestampAfterChatItem:(id)arg1 andBeforeChatItem:(id)arg2 {
-	NSLog(@"should append date!!!1 %@", %orig ? @"YES" : @"NO");
-	%log;
+- (BOOL)wantsSendStatus {
 	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
-	return %orig() || [[settings objectForKey:@"allmessages"] boolValue];
-}
+	BOOL allmessages = [[settings objectForKey:@"allmessages"] boolValue];
+	NSLog(@"[Dated] Overriding -wantsSendStatus to return %@ alongside or instead of %@...", allmessages ? @"YES" : @"NO", %orig ? @"YES" : @"NO");
+	return %orig() || allmessages;
 
-- (BOOL)shouldAppendTimestampAfterChatItem:(id)arg1 andBeforeChatItem:(id)arg2 {
-	NSLog(@"should append time!!!1 %@", %orig ? @"YES" : @"NO");
-	%log;
-	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
-	return %orig() || [[settings objectForKey:@"allmessages"] boolValue];
 }
-
-//- (id)_timeStampForChatItem:(id)arg1 atIndex:(unsigned int)arg2;
 
 %end
 
