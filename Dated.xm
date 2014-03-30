@@ -89,7 +89,39 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 
 /****************************** "Show All" Hook *******************************/
 
-// ...
+// Attempted method introspections (of no use):
+// UICollectionView-
+//	- (id)_createPreparedCellForItemAtIndexPath:(id)arg1 withLayoutAttributes:(id)arg2 applyAttributes:(BOOL)arg3
+// CKTranscriptLabelCell-
+//	- (void)configureForRowObject:(id)arg1
+//	- (id)initWithFrame:(CGRect)arg1
+//	- (void)layoutSubviewsForContents
+// CKTranscriptCollectionViewController-
+//	- (id)collectionView:(id)arg1 cellForItemAtIndexPath:(id)arg2
+//	- (id)initWithConversation:(id)arg1
+//	- (BOOL)balloonView:(id)arg1 canPerformAction:(SEL)arg2 withSender:(id)arg3
+//	- (void)configureCell:(id)arg1 forItemAtIndexPath:(id)arg2
+//	- (id)transcriptObjectForBalloonView:(id)arg1
+// CKTranscriptData-
+//	- (id)initWithConversation:(id)arg1
+//	- (void)setUpdater:(id)arg1
+//	- (id)rows
+//	- (BOOL)isHoldingUpdates
+//	- (id)messageAtIndex:(unsigned int)arg1
+//	- (void)addSendingMessage:(id)arg1 handler:(id)arg2
+//	- (id)updater (and all related CKScheduledUpdater/CKManualUpdater methods)
+// CKTranscriptDataRow-
+//	+ (id)rowWithObject:(id)arg1 forMessage:(id)arg2
+//	- (id)initWithObject:(id)arg1 forMessage:(id)arg2, but look into flags:
+// CKIMMessage-
+//	accessing any of: date:guid:hasBeenSent:isDelivered:messagePartCount:parts:supportsDeliveryReceipts:wantsSendStatus:
+
+// Methods deemed unimportant:
+// CKTranscriptLabelCell-
+//	- (NSAttributedString *)attributedText
+//	- (void)setAttributedText:(NSAttributedString *)arg1
+//	- (void)setLabel:(UILabel *)arg1
+//	- (void)setOrientation:(BOOL)arg1
 
 %end // %group Modern
 

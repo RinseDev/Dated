@@ -1,7 +1,7 @@
 Package: com.insanj.dated
 Name: Dated
 Depends: mobilesubstrate
-Version: 1.1~beta
+Version: 1.1
 Architecture: iphoneos-arm
 Description: Configurable message timestamps.
 Maintainer: Julian Weiss <insanjmail@insanj.com>

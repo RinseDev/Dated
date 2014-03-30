@@ -10,11 +10,17 @@
 #define MODERN_IOS ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
 
 // iOS 7
+// For overriding all timestamps generated, much cleaner than iOS 6, as it
+// only has to be done when a thread is loading (and all the formatting is
+// being warmed up for drawer-writing).
 @interface CKAutoupdatingDateFormatter
 - (id)initWithTemplate:(id)arg1;
 - (id)stringFromDate:(id)arg1;
 @end
 
+// For configuring the size of the drawer (and the label's font-size), so
+// we don't get clipping when the new date's format is way too big (or small).
+// The annotationed numbers are explained in Dated.xm.
 @interface CKTranscriptBalloonCell
 
 @property(copy) NSAttributedString *drawerAttributedText;
@@ -33,18 +39,38 @@
 
 @end
 
-@interface IMChat
-- (BOOL)shouldAppendTimestampAfterChatItem:(id)arg1 andBeforeChatItem:(id)arg2;
-@end
+// For the "Show All" timestamps option.
+@interface CKIMMessage : NSObject
 
-@interface CKIMMessage
-@property(readonly) NSDate * date;
+@property(readonly) NSDate *date;
+@property(readonly) NSString *guid;
+@property(readonly) BOOL hasBeenSent;
+@property(readonly) BOOL isDelivered;
+@property(readonly) unsigned int messagePartCount;
+@property(readonly) NSArray *parts;
+@property(readonly) BOOL supportsDeliveryReceipts;
+@property(readonly) BOOL wantsSendStatus;
 
+- (int)compare:(id)arg1;
+- (NSDate *)date;
+- (NSString *)guid;
+- (BOOL)hasBeenSent;
+- (BOOL)isDelivered;
+- (unsigned int)messagePartCount;
+- (id)parts;
+- (BOOL)postMessageReceivedIfNecessary;
 - (BOOL)supportsDeliveryReceipts;
-- (id)timeDelivered;
+- (BOOL)wantsSendStatus;
+
 @end
+
 
 // iOS 6
+// For all of the above. Individually replaces the date label's text-setting
+// with the equivalent to iOS 7's global AutoupdatingDateFormatter. This is
+// actually quite interesting... it appears that CKADF is just a quick way to
+// do what I do with the -dateFormatFromTemplate:options:locale, with maybe
+// some goodies thrown in that are particular to MobileSMS.
 @interface CKTimestampCell {
     UILabel *_label;
 }
@@ -53,6 +79,8 @@
 - (void)setDate:(id)arg1;
 @end
 
+// For the "Show All" timestamps option. The only remaining trace of the
+// grandfather to Dated (before Dater), Stamper.
 @interface CKTranscriptBubbleData
 - (BOOL)_shouldShowTimestampForDate:(id)arg1;
 @end
