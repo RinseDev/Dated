@@ -92,9 +92,17 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 // Attempted method introspections (of no use):
 // UICollectionView-
 //	- (id)_createPreparedCellForItemAtIndexPath:(id)arg1 withLayoutAttributes:(id)arg2 applyAttributes:(BOOL)arg3
-// CKTranscriptLabelCell-
-//	- (void)configureForRowObject:(id)arg1
+// CKConversation-
+//	- (int)compareBySequenceNumberAndDateDescending:(id)arg1 (too high-level)
+// CKTimestamp-
+//	- (id)initWithDate:(id)arg1 message:(id)arg2
+// CKTranscriptCell-
 //	- (id)initWithFrame:(CGRect)arg1
+//	- (void)configureForRow:(id)arg1
+//	- (void)configureForRowObject:(id)arg1
+// CKTranscriptLabelCell-
+//	- (id)initWithFrame:(CGRect)arg1
+//	- (void)configureForRowObject:(id)arg1
 //	- (void)layoutSubviewsForContents
 // CKTranscriptCollectionViewController-
 //	- (id)collectionView:(id)arg1 cellForItemAtIndexPath:(id)arg2
@@ -102,6 +110,7 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 //	- (BOOL)balloonView:(id)arg1 canPerformAction:(SEL)arg2 withSender:(id)arg3
 //	- (void)configureCell:(id)arg1 forItemAtIndexPath:(id)arg2
 //	- (id)transcriptObjectForBalloonView:(id)arg1
+//	- (void)loadView (although I feel like this means something)
 // CKTranscriptData-
 //	- (id)initWithConversation:(id)arg1
 //	- (void)setUpdater:(id)arg1
@@ -112,7 +121,7 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 //	- (id)updater (and all related CKScheduledUpdater/CKManualUpdater methods)
 // CKTranscriptDataRow-
 //	+ (id)rowWithObject:(id)arg1 forMessage:(id)arg2
-//	- (id)initWithObject:(id)arg1 forMessage:(id)arg2, but look into flags:
+//	- (id)initWithObject:(id)arg1 forMessage:(id)arg2 (even flags are nothing)
 // CKIMMessage-
 //	accessing any of: date:guid:hasBeenSent:isDelivered:messagePartCount:parts:supportsDeliveryReceipts:wantsSendStatus:
 // IMChatItem-
@@ -138,6 +147,10 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 //		- (id)valueForProperty:(id)arg1 ofParticipant:(id)arg2
 // IMTimestampChatItem-
 //	- (id)initWithDate:(id)arg1 (never called?!)
+// IMDatestampChatItem-
+//	- (id)initWithDate:(id)arg1 (never called, too?!)
+// IMHeaderChatItem-
+//	- (id)initWithString:(id)arg1 date:(id)arg2 (never called, too too?!)
 
 // Methods deemed unimportant:
 // CKTranscriptLabelCell-
