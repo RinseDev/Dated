@@ -73,7 +73,7 @@ static void dated_refreshAll(CFNotificationCenterRef center, void *observer, CFS
 
 - (NSArray *)specifiers{
 	if (!_specifiers)
-		_specifiers = [self loadSpecifiersFromPlistName:@"DatedPrefs" target:self];
+		_specifiers = [self loadSpecifiersFromPlistName:(MODERN_IOS ? @"DatedPrefsNoAll" : @"DatedPrefsWithAll") target:self];
 
 	return _specifiers;
 }
