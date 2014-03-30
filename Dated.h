@@ -8,6 +8,8 @@
 
 #define CKDRAWERWIDTH 78.232
 #define MODERN_IOS ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
+#define INSPECT(item) NSLog((@"%s [Line %d] %@\n%@"), __PRETTY_FUNCTION__, __LINE__, item, [NSThread callStackSymbols])
+
 
 // iOS 7
 // For overriding all timestamps generated, much cleaner than iOS 6, as it

@@ -115,6 +115,29 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 //	- (id)initWithObject:(id)arg1 forMessage:(id)arg2, but look into flags:
 // CKIMMessage-
 //	accessing any of: date:guid:hasBeenSent:isDelivered:messagePartCount:parts:supportsDeliveryReceipts:wantsSendStatus:
+// IMChatItem-
+//	- (id)_initWithGUID:(id)arg1 date:(id)arg2 datum1:(id)arg3 datum2:(id)arg4 datum3:(id)arg5
+//	- (int)_compareToChatItem:(id)arg1
+//	- (int)_reverseCompareToChatItem:(id)arg1
+// IMMarkChatItem-
+//	- (id)initWithDate:(id)arg1
+// IMMessage-
+//	- (int)_compareIMMessageDates:(id)arg1
+//	- (int)compare:(id)arg1
+//	- (int)compare:(id)arg1 comparisonType:(int)arg2 (but it is called nicely, and cT == 2)
+//	- (id)_dateStampForChatItem:(id)arg1 atIndex:(unsigned int)arg2 (must be legacy!)
+//	Message not found-
+//		- (BOOL)_doesChatItemContainTimestamp:(id)arg1
+//		- (id)_newHeaderChatItemWithDate:(id)arg1 account:(id)arg2
+//		- (void)_removeChatItem:(id)arg1 andTimestamp:(BOOL)arg2
+//		- (id)_timeStampForChatItem:(id)arg1 atIndex:(unsigned int)arg2
+//		- (BOOL)deleteMessageParts:(id)arg1 forMessage:(id)arg2
+//		- (BOOL)shouldAppendDatestampAfterChatItem:(id)arg1 andBeforeChatItem:(id)arg2
+//		- (BOOL)shouldAppendTimestampAfterChatItem:(id)arg1 andBeforeChatItem:(id)arg2
+//		- (id)valueForChatProperty:(id)arg1
+//		- (id)valueForProperty:(id)arg1 ofParticipant:(id)arg2
+// IMTimestampChatItem-
+//	- (id)initWithDate:(id)arg1 (never called?!)
 
 // Methods deemed unimportant:
 // CKTranscriptLabelCell-

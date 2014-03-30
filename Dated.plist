@@ -1,6 +1,6 @@
 {
 	Filter = {
-		Bundles = ( "com.apple.ChatKit", "com.apple.IMCore", "com.apple.MobileSMS", );
+		Bundles = ( "com.apple.MobileSMS", "com.apple.ChatKit", "com.apple.imcore" );
 		Mode = "Any";
 	};
 }
