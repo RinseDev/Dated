@@ -4,7 +4,7 @@
 
 #import "Dated.h"
 
-/**************************** Global Converstion Methods ****************************/
+/************************** Global Conversion Methods *************************/
 
 NSString *dated_templateStringFromSavedComponents() {
 	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
@@ -35,7 +35,7 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 	}
 }
 
-/**************************** Timestamp Hooks ****************************/
+/****************************** Formatting Hook *******************************/
 
 %group Modern
 
@@ -63,7 +63,7 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 
 %end
 
-/*************************** Drawer Size Hooks ***************************/
+/****************************** Drawer Size Hook ******************************/
 
 // The method I chose for expanding the label size with %hook'ing the
 // -layoutSubviews for the entire ballon. This method is guaranteed to work,
@@ -87,17 +87,9 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 
 %end
 
-%hook CKIMMessage
+/****************************** "Show All" Hook *******************************/
 
-- (BOOL)wantsSendStatus {
-	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
-	BOOL allmessages = [[settings objectForKey:@"allmessages"] boolValue];
-	NSLog(@"[Dated] Overriding -wantsSendStatus to return %@ alongside or instead of %@...", allmessages ? @"YES" : @"NO", %orig ? @"YES" : @"NO");
-	return %orig() || allmessages;
-
-}
-
-%end
+// ...
 
 %end // %group Modern
 
@@ -106,6 +98,8 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 
 %hook CKTimestampCell
 
+// Equivalent to the iOS 7 formatting hooks, but for each individual timestamp,
+// since there is no global DateFormatter class before the Ive-days.
 - (void)setDate:(NSDate *)date {
 	UILabel *label = MSHookIvar<UILabel *>(self, "_label");
 	[label setText:dated_stringFromDateUsingTemplate(date, dated_templateStringFromSavedComponents())];
@@ -113,6 +107,7 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 
 %end
 
+// "Show All" hook.
 %hook CKTranscriptBubbleData
 
 - (BOOL)_shouldShowTimestampForDate:(id)arg1 {
@@ -124,6 +119,7 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 
 %end // %group Ancient
 
+/***************************** Theos Constructor ******************************/
 
 %ctor {
 	if (MODERN_IOS) {

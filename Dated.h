@@ -9,12 +9,6 @@
 #define CKDRAWERWIDTH 78.232
 #define MODERN_IOS ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
 
-// Global
-@interface NSObject (Dated)
-+ (NSString *)templateStringFromSavedComponents;
-+ (NSString *)stringFromDate:(NSDate *)date usingTemplate:(NSString *)components;
-@end
-
 // iOS 7
 @interface CKAutoupdatingDateFormatter
 - (id)initWithTemplate:(id)arg1;
@@ -41,6 +35,13 @@
 
 @interface IMChat
 - (BOOL)shouldAppendTimestampAfterChatItem:(id)arg1 andBeforeChatItem:(id)arg2;
+@end
+
+@interface CKIMMessage
+@property(readonly) NSDate * date;
+
+- (BOOL)supportsDeliveryReceipts;
+- (id)timeDelivered;
 @end
 
 // iOS 6
