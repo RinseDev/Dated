@@ -13,11 +13,12 @@ NSString *dated_templateStringFromSavedComponents() {
 	NSString *year = [[settings objectForKey:@"year"] boolValue] ? @"y" : @"";
 	NSString *month = ![[settings objectForKey:@"month"] boolValue] ? @"M" : @"";
 	NSString *day = ![[settings objectForKey:@"day"] boolValue] ? @"d" : @"";
+	NSString *dow = [[settings objectForKey:@"dow"] boolValue] ? @"cccccc" : @"";
 	NSString *hour = ![[settings objectForKey:@"hour"] boolValue] ? @"H" : @"";
 	NSString *min = ![[settings objectForKey:@"minute"] boolValue] ? @"m" : @"";
 	NSString *sec = [[settings objectForKey:@"second"] boolValue] ? @"s" : @"";
 	NSString *ampm = ![[settings objectForKey:@"ampm"] boolValue] ? @"j" : @"";
-	return [NSString stringWithFormat:@"%@%@%@%@%@%@%@", year, month, day, hour, min, sec, ampm];
+	return [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@", year, month, day, dow, hour, min, sec, ampm];
 }
 
 NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) {

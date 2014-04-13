@@ -69,6 +69,15 @@
         <dict>
             <key>cell</key>				<string>PSSwitchCell</string>
             <key>defaults</key>			<string>com.insanj.dated</string>
+            <key>label</key>               <string>Day of Week</string>
+            <key>key</key> 				<string>dow</string>
+            <key>default</key> 			<false/>
+            <key>PostNotification</key>    <string>com.insanj.dated/RefreshAll</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>				<string>PSSwitchCell</string>
+            <key>defaults</key>			<string>com.insanj.dated</string>
             <key>label</key>               <string>Hour</string>
             <key>key</key> 				<string>hour</string>
             <key>negate</key>              <true/>
