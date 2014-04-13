@@ -3,6 +3,7 @@
 // Source and license available on Git
 
 #import "Dated.h"
+#define DATED_ENABLED ![[[NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]] objectForKey:@"disabled"] boolValue]
 
 /************************** Global Conversion Methods *************************/
 
@@ -191,12 +192,12 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 /***************************** Theos Constructor ******************************/
 
 %ctor {
-	if (MODERN_IOS) {
+	if (MODERN_IOS && DATED_ENABLED) {
 		NSLog(@"[Dated] Injecting modern hooks into ChatKit...");
 		%init(Modern);
 	}
 
-	else {
+	else if (DATED_ENABLED){
 		NSLog(@"[Dated] Injecting ancient hooks into ChatKit...");
 		%init(Ancient);
 	}
