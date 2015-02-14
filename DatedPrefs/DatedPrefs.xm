@@ -10,7 +10,7 @@
 /**************************** Global Converstion Methods ****************************/
 
 NSString *dated_templateStringFromSavedComponents() {
-	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
+	HBPreferences *settings = [HBPreferences preferencesForIdentifier:@"ws.insanj.dated"];
 	NSLog(@"[Dated] Creating template string from saved preferences file: %@", settings);
 
 	NSString *year = [[settings objectForKey:@"year"] boolValue] ? @"y" : @"";
@@ -72,11 +72,12 @@ static void dated_refreshAll(CFNotificationCenterRef center, void *observer, CFS
 
 @implementation DDPrefsListController
 
-- (NSArray *)specifiers{
-	if (!_specifiers)
-		_specifiers = [self loadSpecifiersFromPlistName:(MODERN_IOS ? @"DatedPrefsNoAll" : @"DatedPrefsWithAll") target:self];
++ (NSString *)hb_specifierPlist {
+	return (MODERN_IOS ? @"DatedPrefsNoAll" : @"DatedPrefsWithAll");
+}
 
-	return _specifiers;
++ (UIColor *)hb_tintColor {
+	return DD_TINTCOLOR;
 }
 
 - (void)loadView{
@@ -90,7 +91,7 @@ CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NUL
 - (void)viewDidLoad{
 	[super viewDidLoad];
 }
-
+/*
 - (void)viewWillAppear:(BOOL)animated{
 	if (MODERN_IOS) {
 		self.view.tintColor =
@@ -107,7 +108,7 @@ CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NUL
 		self.navigationController.navigationBar.tintColor = nil;
 	}
 }
-
+*/
 - (void)viewDidDisappear:(BOOL)animated {
 	CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.insanj.dated/RefreshApp"), NULL);
 CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.insanj.dated/RefreshPreview"), NULL);
