@@ -8,6 +8,7 @@ TWEAK_NAME = Dated
 Dated_FILES = Dated.xm
 Dated_FRAMEWORKS = UIKit CoreGraphics
 Dated_PRIVATE_FRAMEWORKS = ChatKit IMCore
+Dated_LIBRARIES = cephei
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 SUBPROJECTS += DatedPrefs
