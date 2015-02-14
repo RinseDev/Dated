@@ -4,12 +4,12 @@
 
 #import "Dated.h"
 #import <Cephei/HBPreferences.h>
-#define DATED_ENABLED ![[[HBPreferences preferencesForIdentifier:@"ws.insanj.dated"] objectForKey:@"disabled"] boolValue]
+#define DATED_ENABLED ![[[HBPreferences preferencesForIdentifier:@"com.insanj.dated"] objectForKey:@"disabled"] boolValue]
 
 /************************** Global Conversion Methods *************************/
 
 NSString *dated_templateStringFromSavedComponents() {
-	HBPreferences *settings = [HBPreferences preferencesForIdentifier:@"ws.insanj.dated"];
+	HBPreferences *settings = [HBPreferences preferencesForIdentifier:@"com.insanj.dated"];
 	NSLog(@"[Dated] Creating template string from saved preferences file: %@", settings);
 
 	NSString *year = [[settings objectForKey:@"year"] boolValue] ? @"y" : @"";
@@ -182,7 +182,7 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 %hook CKTranscriptBubbleData
 
 - (BOOL)_shouldShowTimestampForDate:(id)arg1 {
-	HBPreferences *settings = [HBPreferences preferencesForIdentifier:@"ws.insanj.dated"];
+	HBPreferences *settings = [HBPreferences preferencesForIdentifier:@"com.insanj.dated"];
 	return %orig() || [[settings objectForKey:@"allmessages"] boolValue];
 }
 
