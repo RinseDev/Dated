@@ -10,7 +10,7 @@
 /**************************** Global Converstion Methods ****************************/
 
 NSString *dated_templateStringFromSavedComponents() {
-	HBPreferences *settings = [HBPreferences preferencesForIdentifier:@"com.insanj.dated.plist"];
+	HBPreferences *settings = [HBPreferences preferencesForIdentifier:@"com.insanj.dated"];
 	NSLog(@"[Dated] Creating template string from saved preferences file: %@", settings);
 
 	NSString *year = [[settings objectForKey:@"year"] boolValue] ? @"y" : @"";
