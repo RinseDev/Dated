@@ -8,7 +8,7 @@
 
 #import "Dated.h"
 
-static CGFloat kDatedEstimatedDrawerWidth = 78.232;
+// static CGFloat kDatedEstimatedDrawerWidth = 78.232;
 static HBPreferences *datedPreferences;
 
 /*
@@ -124,12 +124,14 @@ _______
 	UILabel *label = self.drawerLabel;
 
 	// Will be invalidated by CKUIBehavior if too large.
-	CGFloat requiredWidth = [label.text sizeWithAttributes:@{NSFontAttributeName : label.font}].width;
-	label.frame = CGRectMake(label.frame.origin.x, label.frame.origin.y, fmin(requiredWidth, kDatedEstimatedDrawerWidth), label.frame.size.height);
+	// CGFloat requiredWidth = [label.text sizeWithAttributes:@{NSFontAttributeName : label.font}].width;
+	// label.frame = CGRectMake(label.frame.origin.x, label.frame.origin.y, fmin(requiredWidth, kDatedEstimatedDrawerWidth), label.frame.size.height);
 
-	label.minimumScaleFactor = 0.6;
-	label.adjustsFontSizeToFitWidth = YES;
-	label.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
+	label.numberOfLines = 0;
+	label.lineBreakMode = NSLineBreakByWordWrapping;
+	//label.minimumScaleFactor = 0.6;
+	//label.adjustsFontSizeToFitWidth = YES;
+	//label.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
 }
 
 %end
