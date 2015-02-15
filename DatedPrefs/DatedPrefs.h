@@ -7,8 +7,9 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/NSDistributedNotificationCenter.h>
 #import "../Dated.h"
+#import <CepheiPrefs/HBRootListController.h>
 
-@interface DDPrefsListController : PSListController
+@interface DDPrefsListController : HBRootListController
 @end
 
 @interface DDListItemsController : PSListItemsController

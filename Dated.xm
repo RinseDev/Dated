@@ -3,12 +3,13 @@
 // Source and license available on Git
 
 #import "Dated.h"
-#define DATED_ENABLED ![[[NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]] objectForKey:@"disabled"] boolValue]
+#import <Cephei/HBPreferences.h>
+#define DATED_ENABLED ![[[HBPreferences preferencesForIdentifier:@"com.insanj.dated"] objectForKey:@"disabled"] boolValue]
 
 /************************** Global Conversion Methods *************************/
 
 NSString *dated_templateStringFromSavedComponents() {
-	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
+	HBPreferences *settings = [HBPreferences preferencesForIdentifier:@"com.insanj.dated"];
 	NSLog(@"[Dated] Creating template string from saved preferences file: %@", settings);
 
 	NSString *year = [[settings objectForKey:@"year"] boolValue] ? @"y" : @"";
@@ -181,7 +182,7 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 %hook CKTranscriptBubbleData
 
 - (BOOL)_shouldShowTimestampForDate:(id)arg1 {
-	NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.insanj.dated.plist"]];
+	HBPreferences *settings = [HBPreferences preferencesForIdentifier:@"com.insanj.dated"];
 	return %orig() || [[settings objectForKey:@"allmessages"] boolValue];
 }
 
