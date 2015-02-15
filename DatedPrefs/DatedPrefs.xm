@@ -5,6 +5,9 @@
 #import "DatedPrefs.h"
 
 static UIColor *kDatedTintColor = [UIColor colorWithRed:46/255.0 green:204/255.0 blue:64/255.0 alpha:1.0];
+static BOOL alreadyKilledThisTimeAround = NO;
+static NSString *kDatedRefreshPreviewLabelNotificationName = @"Dated.Refresh";
+static NSTimeInterval kDatedSteveJobsInterval = -468650652;
 
 /*
               .-'''-.                                               
@@ -23,16 +26,14 @@ static UIColor *kDatedTintColor = [UIColor colorWithRed:46/255.0 green:204/255.0
 */
 static NSString *dated_templateStringFromSavedComponents() {
 	HBPreferences *settings = [%c(HBPreferences) preferencesForIdentifier:@"com.insanj.dated"];
-	NSLog(@"[Dated] Creating template string from saved preferences file: %@", settings);
-
-	NSString *year = [[settings objectForKey:@"year"] boolValue] ? @"y" : @"";
-	NSString *month = ![[settings objectForKey:@"month"] boolValue] ? @"M" : @"";
-	NSString *day = ![[settings objectForKey:@"day"] boolValue] ? @"d" : @"";
-	NSString *dow = [[settings objectForKey:@"dow"] boolValue] ? @"cccccc" : @"";
-	NSString *hour = ![[settings objectForKey:@"hour"] boolValue] ? @"H" : @"";
-	NSString *min = ![[settings objectForKey:@"minute"] boolValue] ? @"m" : @"";
-	NSString *sec = [[settings objectForKey:@"second"] boolValue] ? @"s" : @"";
-	NSString *ampm = ![[settings objectForKey:@"ampm"] boolValue] ? @"j" : @"";
+	NSString *year = [settings boolForKey:@"year"] ? @"y" : @"";
+	NSString *month = ![settings boolForKey:@"month"] ? @"M" : @"";
+	NSString *day = ![settings boolForKey:@"day"] ? @"d" : @"";
+	NSString *dow = [settings boolForKey:@"dow"] ? @"cccccc" : @"";
+	NSString *hour = ![settings boolForKey:@"hour"] ? @"H" : @"";
+	NSString *min = ![settings boolForKey:@"minute"] ? @"m" : @"";
+	NSString *sec = [settings boolForKey:@"second"] ? @"s" : @"";
+	NSString *ampm = ![settings boolForKey:@"ampm"] ? @"j" : @"";
 	return [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@", year, month, day, dow, hour, min, sec, ampm];
 }
 
@@ -66,17 +67,25 @@ static NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *compo
 |  |   |  |               |   /        | |     
 '--'   '--'               `'-'         |_|     
 */
-static void dated_refreshApp(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-	system("killall -9 MobileSMS");
+void dated_killMobileSMS() {
+	if (!alreadyKilledThisTimeAround) {
+		NSLog(@"[Dated] Killing MobileSMS to refresh display...");
+		alreadyKilledThisTimeAround = YES;
+		system("killall -9 MobileSMS");
+	}
 }
 
-static void dated_refreshPreview(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"DDRefreshPreview" object:nil];
+void dated_refreshApp(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+	dated_killMobileSMS();
 }
 
-static void dated_refreshAll(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-	system("killall -9 MobileSMS");
-	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"DDRefreshPreview" object:nil];
+void dated_refreshPreview(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kDatedRefreshPreviewLabelNotificationName object:nil];
+}
+
+void dated_refreshAll(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+	dated_killMobileSMS();
+	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kDatedRefreshPreviewLabelNotificationName object:nil];
 }
 
 /*                                                                                                                                             
@@ -132,13 +141,19 @@ _________   _...._                    __.....__
 	[super loadView];
 
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareTapped:)];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
+
+	alreadyKilledThisTimeAround = NO;
 	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &dated_refreshApp, CFSTR("com.insanj.dated/RefreshApp"), NULL, 0);
 	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &dated_refreshPreview, CFSTR("com.insanj.dated/RefreshPreview"), NULL, 0);
 	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &dated_refreshAll, CFSTR("com.insanj.dated/RefreshAll"), NULL, 0);
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
+- (void)viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
 
 	CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.insanj.dated/RefreshApp"), NULL);
 	CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.insanj.dated/RefreshPreview"), NULL);
@@ -147,7 +162,7 @@ _________   _...._                    __.....__
 
 - (void)shareTapped:(UIBarButtonItem *)sender {
 	NSString *text = @"Configurable, reliable timestamps are all mine with #Dated";
-	NSURL *url = [NSURL URLWithString:@"https://github.com/rinsedev"];
+	NSURL *url = [NSURL URLWithString:@"http://rinsedev.github.io/Dated/"];
 
 	if (%c(UIActivityViewController)) {
 		UIActivityViewController *viewController = [[%c(UIActivityViewController) alloc] initWithActivityItems:[NSArray arrayWithObjects:text, url, nil] applicationActivities:nil];
@@ -214,16 +229,16 @@ _________   _...._                    __.....__
 	self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
 
 	if (self) {
-		self.textLabel.text = dated_stringFromDateUsingTemplate([NSDate dateWithTimeIntervalSince1970:-468650652], dated_templateStringFromSavedComponents());
-		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshPreview) name:@"DDRefreshPreview" object:nil];
+		self.textLabel.text = dated_stringFromDateUsingTemplate([NSDate dateWithTimeIntervalSince1970:kDatedSteveJobsInterval], dated_templateStringFromSavedComponents());
+		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshPreview:) name:kDatedRefreshPreviewLabelNotificationName object:nil];
 	}
 
 	return self;
 }
 
-- (void)refreshPreview {
-	NSString *newDateText = dated_stringFromDateUsingTemplate([NSDate dateWithTimeIntervalSince1970:-468650652], dated_templateStringFromSavedComponents());
-	NSLog(@"[Dated] Refreshing preview text label (%@), and killing Messages app to apply...", newDateText);
+- (void)refreshPreview:(NSNotification *)notification {
+	NSString *newDateText = dated_stringFromDateUsingTemplate([NSDate dateWithTimeIntervalSince1970:kDatedSteveJobsInterval], dated_templateStringFromSavedComponents());
+	NSLog(@"[Dated] Refreshing preview text label (%@)...", newDateText);
 	self.textLabel.text = newDateText;
 }
 
