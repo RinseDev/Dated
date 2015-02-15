@@ -128,7 +128,7 @@
 			<key>cell</key>	          <string>PSGroupCell</string>
 			<key>label</key>             <string>About</string>
             <key>footerAlignment</key>   <integer>1</integer>
-            <key>footerText</key>		<string>Thanks for using Dated (1.1) by Julian Weiss. Please send all feedback directly from Cydia.</string>
+            <key>footerText</key>		<string>Thanks for using Dated (1.2). Please send all feedback directly from Cydia.</string>
 		</dict>
 
         <dict>
@@ -148,7 +148,7 @@
         <dict>
             <key>cell</key>	          <string>PSGroupCell</string>
             <key>footerAlignment</key>   <integer>1</integer>
-            <key>footerText</key>		<string>© 2014 Julian Weiss</string>
+            <key>footerText</key>		<string>© 2014-2015 Rinse Developer Collective</string>
         </dict>
 
 	</array>
