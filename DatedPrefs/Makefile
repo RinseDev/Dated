@@ -9,7 +9,7 @@ DatedPrefs_INSTALL_PATH = /Library/PreferenceBundles
 DatedPrefs_FRAMEWORKS = UIKit Twitter CoreFoundation
 DatedPrefs_PRIVATE_FRAMEWORKS = Preferences ChatKit
 DatedPrefs_CFLAGS = -fobjc-arc
-DatedPrefs_LIBRARIES = cepheiprefs
+DatedPrefs_LIBRARIES = cepheiprefs cephei
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

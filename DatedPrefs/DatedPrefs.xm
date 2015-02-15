@@ -9,6 +9,9 @@ static NSString *kDatedRefreshPreviewLabelNotificationName = @"Dated.Refresh";
 static NSTimeInterval kDatedSteveJobsInterval = -468650652;
 static BOOL alreadyKilledThisTimeAround = NO;
 
+static HBPreferences *internalDatedPreferences = [[HBPreferences alloc] initWithIdentifier:@"com.insanj.dated"];
+
+
 /*
               .-'''-.                                               
              '   _    \                                             
@@ -27,15 +30,14 @@ static BOOL alreadyKilledThisTimeAround = NO;
 static NSString *dated_generateSteveJobsPreviewString() {
 	NSDate *date = [NSDate dateWithTimeIntervalSince1970:kDatedSteveJobsInterval];
 
-	HBPreferences *settings = [%c(HBPreferences) preferencesForIdentifier:@"com.insanj.dated"];
-	NSString *year = [settings boolForKey:@"year"] ? @"y" : @"";
-	NSString *month = ![settings boolForKey:@"month"] ? @"M" : @"";
-	NSString *day = ![settings boolForKey:@"day"] ? @"d" : @"";
-	NSString *dow = [settings boolForKey:@"dow"] ? @"cccccc" : @"";
-	NSString *hour = ![settings boolForKey:@"hour"] ? @"H" : @"";
-	NSString *min = ![settings boolForKey:@"minute"] ? @"m" : @"";
-	NSString *sec = [settings boolForKey:@"second"] ? @"s" : @"";
-	NSString *ampm = ![settings boolForKey:@"ampm"] ? @"j" : @"";
+	NSString *year = [internalDatedPreferences boolForKey:@"year"] ? @"y" : @"";
+	NSString *month = ![internalDatedPreferences boolForKey:@"month"] ? @"M" : @"";
+	NSString *day = ![internalDatedPreferences boolForKey:@"day"] ? @"d" : @"";
+	NSString *dow = [internalDatedPreferences boolForKey:@"dow"] ? @"cccccc" : @"";
+	NSString *hour = ![internalDatedPreferences boolForKey:@"hour"] ? @"H" : @"";
+	NSString *min = ![internalDatedPreferences boolForKey:@"minute"] ? @"m" : @"";
+	NSString *sec = [internalDatedPreferences boolForKey:@"second"] ? @"s" : @"";
+	NSString *ampm = ![internalDatedPreferences boolForKey:@"ampm"] ? @"j" : @"";
 	NSString *components = [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@", year, month, day, dow, hour, min, sec, ampm];
 
 	if (MODERN_IOS) {
@@ -80,12 +82,12 @@ void dated_refreshApp(CFNotificationCenterRef center, void *observer, CFStringRe
 }
 
 void dated_refreshPreview(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kDatedRefreshPreviewLabelNotificationName object:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:kDatedRefreshPreviewLabelNotificationName object:nil];
 }
 
 void dated_refreshAll(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
 	dated_killMobileSMS();
-	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kDatedRefreshPreviewLabelNotificationName object:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:kDatedRefreshPreviewLabelNotificationName object:nil];
 }
 
 /*                                                                                                                                             
@@ -230,13 +232,13 @@ _________   _...._                    __.....__
 
 	if (self) {
 		self.textLabel.text = datedSteveJobsPreviewString;
-		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshPreview:) name:kDatedRefreshPreviewLabelNotificationName object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dated_refreshPreview:) name:kDatedRefreshPreviewLabelNotificationName object:nil];
 	}
 
 	return self;
 }
 
-- (void)refreshPreview:(NSNotification *)notification {
+- (void)dated_refreshPreview:(NSNotification *)notification {
 	datedSteveJobsPreviewString = dated_generateSteveJobsPreviewString();
 	self.textLabel.text = datedSteveJobsPreviewString;
 
@@ -246,8 +248,7 @@ _________   _...._                    __.....__
 - (void)prepareForReuse {
 	[super prepareForReuse];
 
-	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self name:kDatedRefreshPreviewLabelNotificationName object:nil];
-
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:kDatedRefreshPreviewLabelNotificationName object:nil];
 }
 
 @end

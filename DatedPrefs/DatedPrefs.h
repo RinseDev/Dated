@@ -1,7 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <Preferences/Preferences.h>
 #import <Twitter/TWTweetComposeViewController.h>
-#import <Foundation/NSDistributedNotificationCenter.h>
 #import <Cephei/HBPreferences.h>
 #import <Cephei/prefs/HBListController.h>
 #import "substrate.h"
@@ -25,5 +24,7 @@
 @end
 
 @interface DDPreviewTextCell : PSTableCell
+
+- (void)dated_refreshPreview:(NSNotification *)notification;
 
 @end
