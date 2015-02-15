@@ -1,6 +1,6 @@
 Package: com.insanj.dated
 Name: Dated
-Depends: mobilesubstrate
+Depends: mobilesubstrate, ws.hbang.common (>= 1.2)
 Version: 1.2
 Architecture: iphoneos-arm
 Description: Configurable message timestamps.

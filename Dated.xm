@@ -56,8 +56,6 @@ static NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *compo
 	}
 }
 
-/****************************** Formatting Hook *******************************/
-
 %group Modern
 
 /*
@@ -118,7 +116,6 @@ _______
 // -layoutSubviews for the entire ballon. This method is guaranteed to work,
 // although it may not be the most efficient. The numbered methods in the .h
 // were other tempting methods, but didn't get called as consistently.
-
 %hook CKTranscriptBalloonCell
 
 - (void)layoutSubviews {
@@ -127,8 +124,8 @@ _______
 	UILabel *label = self.drawerLabel;
 
 	// Will be invalidated by CKUIBehavior if too large.
-	CGFloat requiredWidth =  [label.text sizeWithFont:label.font].width;
-	[label setFrame:CGRectMake(label.frame.origin.x, label.frame.origin.y, fmin(requiredWidth, kDatedEstimatedDrawerWidth), label.frame.size.height)];
+	CGFloat requiredWidth =  [label.text sizeWithAttributes:@{NSFontAttributeName : label.font}].width;
+	label.frame = CGRectMake(label.frame.origin.x, label.frame.origin.y, fmin(requiredWidth, kDatedEstimatedDrawerWidth), label.frame.size.height);
 
 	label.minimumScaleFactor = 0.5;
 	label.adjustsFontSizeToFitWidth = YES;
@@ -279,7 +276,7 @@ _______
                 `'-'                         
 */
 %ctor {
-	BOOL datedEnabled = ![[[HBPreferences preferencesForIdentifier:@"com.insanj.dated"] objectForKey:@"disabled"] boolValue];
+	BOOL datedEnabled = ![[HBPreferences preferencesForIdentifier:@"com.insanj.dated"] boolForKey:@"disabled"];
 
 	if (datedEnabled) {
 		if (MODERN_IOS) {
