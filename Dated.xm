@@ -9,6 +9,7 @@
 #import "Dated.h"
 
 static CGFloat kDatedEstimatedDrawerWidth = 78.232;
+static HBPreferences *datedPreferences;
 
 /*
                                     _..._               
@@ -26,17 +27,16 @@ static CGFloat kDatedEstimatedDrawerWidth = 78.232;
    |_|  `-'  `--' '--'   '--'                           
 */
 static NSString *dated_templateStringFromSavedComponents() {
-	HBPreferences *settings = [%c(HBPreferences) preferencesForIdentifier:@"com.insanj.dated"];
-	NSLog(@"[Dated] Creating template string from saved preferences file: %@", settings);
+	NSLog(@"[Dated] Creating template string from saved preferences file: %@", datedPreferences);
 
-	NSString *year = [[settings objectForKey:@"year"] boolValue] ? @"y" : @"";
-	NSString *month = ![[settings objectForKey:@"month"] boolValue] ? @"M" : @"";
-	NSString *day = ![[settings objectForKey:@"day"] boolValue] ? @"d" : @"";
-	NSString *dow = [[settings objectForKey:@"dow"] boolValue] ? @"cccccc" : @"";
-	NSString *hour = ![[settings objectForKey:@"hour"] boolValue] ? @"H" : @"";
-	NSString *min = ![[settings objectForKey:@"minute"] boolValue] ? @"m" : @"";
-	NSString *sec = [[settings objectForKey:@"second"] boolValue] ? @"s" : @"";
-	NSString *ampm = ![[settings objectForKey:@"ampm"] boolValue] ? @"j" : @"";
+	NSString *year = [datedPreferences boolForKey:@"year"] ? @"y" : @"";
+	NSString *month = ![datedPreferences boolForKey:@"month"] ? @"M" : @"";
+	NSString *day = ![datedPreferences boolForKey:@"day"] ? @"d" : @"";
+	NSString *dow = [datedPreferences boolForKey:@"dow"] ? @"cccccc" : @"";
+	NSString *hour = ![datedPreferences boolForKey:@"hour"] ? @"H" : @"";
+	NSString *min = ![datedPreferences boolForKey:@"minute"] ? @"m" : @"";
+	NSString *sec = [datedPreferences boolForKey:@"second"] ? @"s" : @"";
+	NSString *ampm = ![datedPreferences boolForKey:@"ampm"] ? @"j" : @"";
 	
 	return [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@", year, month, day, dow, hour, min, sec, ampm];
 }
@@ -124,11 +124,12 @@ _______
 	UILabel *label = self.drawerLabel;
 
 	// Will be invalidated by CKUIBehavior if too large.
-	CGFloat requiredWidth =  [label.text sizeWithAttributes:@{NSFontAttributeName : label.font}].width;
+	CGFloat requiredWidth = [label.text sizeWithAttributes:@{NSFontAttributeName : label.font}].width;
 	label.frame = CGRectMake(label.frame.origin.x, label.frame.origin.y, fmin(requiredWidth, kDatedEstimatedDrawerWidth), label.frame.size.height);
 
-	label.minimumScaleFactor = 0.5;
+	label.minimumScaleFactor = 0.6;
 	label.adjustsFontSizeToFitWidth = YES;
+	label.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
 }
 
 %end
@@ -252,8 +253,7 @@ _______
 %hook CKTranscriptBubbleData
 
 - (BOOL)_shouldShowTimestampForDate:(id)arg1 {
-	HBPreferences *settings = [%c(HBPreferences) preferencesForIdentifier:@"com.insanj.dated"];
-	return %orig() || [[settings objectForKey:@"allmessages"] boolValue];
+	return %orig() || [datedPreferences boolForKey:@"allmessages"];
 }
 
 %end
@@ -276,7 +276,8 @@ _______
                 `'-'                         
 */
 %ctor {
-	BOOL datedEnabled = ![[HBPreferences preferencesForIdentifier:@"com.insanj.dated"] boolForKey:@"disabled"];
+    datedPreferences = [[HBPreferences alloc] initWithIdentifier:@"com.insanj.dated"];
+	BOOL datedEnabled = ![datedPreferences boolForKey:@"disabled"];
 
 	if (datedEnabled) {
 		if (MODERN_IOS) {

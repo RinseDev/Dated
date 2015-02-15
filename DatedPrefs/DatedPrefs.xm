@@ -5,9 +5,9 @@
 #import "DatedPrefs.h"
 
 static UIColor *kDatedTintColor = [UIColor colorWithRed:46/255.0 green:204/255.0 blue:64/255.0 alpha:1.0];
-static BOOL alreadyKilledThisTimeAround = NO;
 static NSString *kDatedRefreshPreviewLabelNotificationName = @"Dated.Refresh";
 static NSTimeInterval kDatedSteveJobsInterval = -468650652;
+static BOOL alreadyKilledThisTimeAround = NO;
 
 /*
               .-'''-.                                               
@@ -24,7 +24,9 @@ static NSTimeInterval kDatedSteveJobsInterval = -468650652;
    | |                   |_|                     \ \._,\ '/  |   /  
    |_|                                            `--'  `"   `'-'   
 */
-static NSString *dated_templateStringFromSavedComponents() {
+static NSString *dated_generateSteveJobsPreviewString() {
+	NSDate *date = [NSDate dateWithTimeIntervalSince1970:kDatedSteveJobsInterval];
+
 	HBPreferences *settings = [%c(HBPreferences) preferencesForIdentifier:@"com.insanj.dated"];
 	NSString *year = [settings boolForKey:@"year"] ? @"y" : @"";
 	NSString *month = ![settings boolForKey:@"month"] ? @"M" : @"";
@@ -34,11 +36,7 @@ static NSString *dated_templateStringFromSavedComponents() {
 	NSString *min = ![settings boolForKey:@"minute"] ? @"m" : @"";
 	NSString *sec = [settings boolForKey:@"second"] ? @"s" : @"";
 	NSString *ampm = ![settings boolForKey:@"ampm"] ? @"j" : @"";
-	return [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@", year, month, day, dow, hour, min, sec, ampm];
-}
-
-static NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) {
-	NSLog(@"[Dated] Creating string from date %@ using components string: %@", date, components);
+	NSString *components = [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@", year, month, day, dow, hour, min, sec, ampm];
 
 	if (MODERN_IOS) {
 		CKAutoupdatingDateFormatter *formatter = [[%c(CKAutoupdatingDateFormatter) alloc] initWithTemplate:components];
@@ -51,6 +49,8 @@ static NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *compo
 		return [formatter stringFromDate:date];
 	}
 }
+
+static NSString *datedSteveJobsPreviewString = dated_generateSteveJobsPreviewString();
 
 /*
                .-'''-.                         
@@ -229,7 +229,7 @@ _________   _...._                    __.....__
 	self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
 
 	if (self) {
-		self.textLabel.text = dated_stringFromDateUsingTemplate([NSDate dateWithTimeIntervalSince1970:kDatedSteveJobsInterval], dated_templateStringFromSavedComponents());
+		self.textLabel.text = datedSteveJobsPreviewString;
 		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshPreview:) name:kDatedRefreshPreviewLabelNotificationName object:nil];
 	}
 
@@ -237,9 +237,17 @@ _________   _...._                    __.....__
 }
 
 - (void)refreshPreview:(NSNotification *)notification {
-	NSString *newDateText = dated_stringFromDateUsingTemplate([NSDate dateWithTimeIntervalSince1970:kDatedSteveJobsInterval], dated_templateStringFromSavedComponents());
-	NSLog(@"[Dated] Refreshing preview text label (%@)...", newDateText);
-	self.textLabel.text = newDateText;
+	datedSteveJobsPreviewString = dated_generateSteveJobsPreviewString();
+	self.textLabel.text = datedSteveJobsPreviewString;
+
+	NSLog(@"[Dated] Refreshed preview text label: %@", datedSteveJobsPreviewString);
+}
+
+- (void)prepareForReuse {
+	[super prepareForReuse];
+
+	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self name:kDatedRefreshPreviewLabelNotificationName object:nil];
+
 }
 
 @end
