@@ -118,27 +118,26 @@
 			<key>cell</key>	          <string>PSGroupCell</string>
 			<key>label</key>             <string>About</string>
             <key>footerAlignment</key>   <integer>1</integer>
-            <key>footerText</key>		<string>Thanks for using Dated (1.1) by Julian Weiss. Please send all feedback directly from Cydia.</string>
+            <key>footerText</key>		<string>Thanks for using Dated (1.2) by Rinse. Please send all feedback directly from Cydia.</string>
 		</dict>
 
         <dict>
             <key>cell</key> 		 <string>PSButtonCell</string>
             <key>label</key> 	    <string>Developer (@insanj)</string>
             <key>icon</key> 		 <string>twitter.png</string>
-            <key>action</key> 	   <string>insanj</string>
+            <key>action</key> 	   <string>developerTapped</string>
         </dict>
 
         <dict>
             <key>cell</key> 		 <string>PSButtonCell</string>
             <key>label</key> 	    <string>Source (Github)</string>
             <key>icon</key> 		 <string>safari.png</string>
-            <key>action</key> 	   <string>website</string>
+            <key>action</key> 	   <string>sourceTapped</string>
         </dict>
 
         <dict>
             <key>cell</key>	          <string>PSGroupCell</string>
-            <key>footerAlignment</key>   <integer>1</integer>
-            <key>footerText</key>		<string>© 2014 Julian Weiss</string>
+            <key>footerText</key>		<string>© 2014-2015 Rinse Developer Collective</string>
         </dict>
 
 	</array>

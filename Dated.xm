@@ -1,15 +1,32 @@
-// Dated (commercial tweak)
-// Created by Julian (insanj) Weiss 2014
-// Source and license available on Git
+//
+//  Dated.xm
+//  Dated
+//	
+//  Created by Julian Weiss on 3/20/14.
+//  Copyright (c) 2014-2015, insanj. All rights reserved.
+//
 
 #import "Dated.h"
-#import <Cephei/HBPreferences.h>
-#define DATED_ENABLED ![[[HBPreferences preferencesForIdentifier:@"com.insanj.dated"] objectForKey:@"disabled"] boolValue]
 
-/************************** Global Conversion Methods *************************/
+static CGFloat kDatedEstimatedDrawerWidth = 78.232;
 
-NSString *dated_templateStringFromSavedComponents() {
-	HBPreferences *settings = [HBPreferences preferencesForIdentifier:@"com.insanj.dated"];
+/*
+                                    _..._               
+                                 .-'_..._''.            
+                     _..._     .' .'      '.\           
+     _.._          .'     '.  / .'                      
+   .' .._|        .   .-.   .. '                        
+   | '            |  '   '  || |                        
+ __| |__  _    _  |  |   |  || |                   _    
+|__   __|| '  / | |  |   |  |. '                 .' |   
+   | |  .' | .' | |  |   |  | \ '.          .   .   | / 
+   | |  /  | /  | |  |   |  |  '. `._____.-'/ .'.'| |// 
+   | | |   `'.  | |  |   |  |    `-.______ /.'.'.-'  /  
+   | | '   .'|  '/|  |   |  |             ` .'   \_.'   
+   |_|  `-'  `--' '--'   '--'                           
+*/
+static NSString *dated_templateStringFromSavedComponents() {
+	HBPreferences *settings = [%c(HBPreferences) preferencesForIdentifier:@"com.insanj.dated"];
 	NSLog(@"[Dated] Creating template string from saved preferences file: %@", settings);
 
 	NSString *year = [[settings objectForKey:@"year"] boolValue] ? @"y" : @"";
@@ -20,14 +37,15 @@ NSString *dated_templateStringFromSavedComponents() {
 	NSString *min = ![[settings objectForKey:@"minute"] boolValue] ? @"m" : @"";
 	NSString *sec = [[settings objectForKey:@"second"] boolValue] ? @"s" : @"";
 	NSString *ampm = ![[settings objectForKey:@"ampm"] boolValue] ? @"j" : @"";
+	
 	return [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@", year, month, day, dow, hour, min, sec, ampm];
 }
 
-NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) {
+static NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) {
 	NSLog(@"[Dated] Creating string from date %@ using components string: %@", date, components);
 
 	if (MODERN_IOS) {
-		CKAutoupdatingDateFormatter *formatter = [[[objc_getClass("CKAutoupdatingDateFormatter") alloc] initWithTemplate:components] autorelease];
+		CKAutoupdatingDateFormatter *formatter = [[[%c(CKAutoupdatingDateFormatter) alloc] initWithTemplate:components] autorelease];
 		return [formatter stringFromDate:date];
 	}
 
@@ -42,6 +60,21 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 
 %group Modern
 
+/*
+              .-'''-.                                               
+             '   _    \                                             
+           /   /` '.   \          __  __   ___                      
+     _.._ .   |     \  '         |  |/  `.'   `.                    
+   .' .._||   '      |  '.-,.--. |   .-.  .-.   '              .|   
+   | '    \    \     / / |  .-. ||  |  |  |  |  |    __      .' |_  
+ __| |__   `.   ` ..' /  | |  | ||  |  |  |  |  | .:--.'.  .'     | 
+|__   __|     '-...-'`   | |  | ||  |  |  |  |  |/ |   \ |'--.  .-' 
+   | |                   | |  '- |  |  |  |  |  |`" __ | |   |  |   
+   | |                   | |     |__|  |__|  |__| .'.''| |   |  |   
+   | |                   | |                     / /   | |_  |  '.' 
+   | |                   |_|                     \ \._,\ '/  |   /  
+   |_|                                            `--'  `"   `'-'   
+*/
 %hook CKAutoupdatingDateFormatter
 
 // CKAutoupdatingDateFormatter templates don't strictly follow NSDateFormatter,
@@ -66,8 +99,21 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 
 %end
 
-/****************************** Drawer Size Hook ******************************/
-
+/*
+                                                                    
+_______                                                             
+\  ___ `'.                                   __.....__              
+ ' |--.\  \                      _     _ .-''         '.            
+ | |    \  ' .-,.--.       /\    \\   ///     .-''"'-.  `. .-,.--.  
+ | |     |  '|  .-. |    __`\\  //\\ ///     /________\   \|  .-. | 
+ | |     |  || |  | | .:--.'.\`//  \'/ |                  || |  | | 
+ | |     ' .'| |  | |/ |   \ |\|   |/  \    .-------------'| |  | | 
+ | |___.' /' | |  '- `" __ | | '        \    '-.____...---.| |  '-  
+/_______.'/  | |      .'.''| |           `.             .' | |      
+\_______|/   | |     / /   | |_            `''-...... -'   | |      
+             |_|     \ \._,\ '/                            |_|      
+                      `--'  `"                                      
+*/
 // The method I chose for expanding the label size with %hook'ing the
 // -layoutSubviews for the entire ballon. This method is guaranteed to work,
 // although it may not be the most efficient. The numbered methods in the .h
@@ -82,7 +128,7 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 
 	// Will be invalidated by CKUIBehavior if too large.
 	CGFloat requiredWidth =  [label.text sizeWithFont:label.font].width;
-	[label setFrame:CGRectMake(label.frame.origin.x, label.frame.origin.y, fmin(requiredWidth, CKDRAWERWIDTH), label.frame.size.height)];
+	[label setFrame:CGRectMake(label.frame.origin.x, label.frame.origin.y, fmin(requiredWidth, kDatedEstimatedDrawerWidth), label.frame.size.height)];
 
 	label.minimumScaleFactor = 0.5;
 	label.adjustsFontSizeToFitWidth = YES;
@@ -90,8 +136,21 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 
 %end
 
-/****************************** "Show All" Hook *******************************/
-
+/*
+                        .-'''-.                                                
+                       '   _    \                                   .---..---. 
+             .       /   /` '.   \                                  |   ||   | 
+           .'|      .   |     \  '       _     _                    |   ||   | 
+          <  |      |   '      |  '/\    \\   //                    |   ||   | 
+           | |      \    \     / / `\\  //\\ //               __    |   ||   | 
+       _   | | .'''-.`.   ` ..' /    \`//  \'/             .:--.'.  |   ||   | 
+     .' |  | |/.'''. \  '-...-'`      \|   |/             / |   \ | |   ||   | 
+    .   | /|  /    | |                 '                  `" __ | | |   ||   | 
+  .'.'| |//| |     | |                                     .'.''| | |   ||   | 
+.'.'.-'  / | |     | |                                    / /   | |_'---''---' 
+.'   \_.'  | '.    | '.                                   \ \._,\ '/           
+           '---'   '---'                                   `--'  `"            
+*/
 // Attempted method introspections (of no use):
 // UICollectionView-
 //	- (id)_createPreparedCellForItemAtIndexPath:(id)arg1 withLayoutAttributes:(id)arg2 applyAttributes:(BOOL)arg3
@@ -164,8 +223,22 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 
 %end // %group Modern
 
-
-%group Ancient
+/*
+                                                   _..._                
+.---.                                           .-'_..._''.             
+|   |      __.....__                          .' .'      '.\            
+|   |  .-''         '.     .--./)            / .'       .-.          .- 
+|   | /     .-''"'-.  `.  /.''\\            . '          \ \        / / 
+|   |/     /________\   \| |  | |      __   | |           \ \      / /  
+|   ||                  | \`-' /    .:--.'. | |            \ \    / /   
+|   |\    .-------------' /("'`    / |   \ |. '             \ \  / /    
+|   | \    '-.____...---. \ '---.  `" __ | | \ '.          . \ `  /     
+|   |  `.             .'   /'""'.\  .'.''| |  '. `._____.-'/  \  /      
+'---'    `''-...... -'    ||     ||/ /   | |_   `-.______ /   / /       
+                          \'. __// \ \._,\ '/            `|`-' /        
+                           `'---'   `--'  `"               '..'         
+*/
+%group Legacy
 
 %hook CKTimestampCell
 
@@ -182,24 +255,39 @@ NSString *dated_stringFromDateUsingTemplate(NSDate *date, NSString *components) 
 %hook CKTranscriptBubbleData
 
 - (BOOL)_shouldShowTimestampForDate:(id)arg1 {
-	HBPreferences *settings = [HBPreferences preferencesForIdentifier:@"com.insanj.dated"];
+	HBPreferences *settings = [%c(HBPreferences) preferencesForIdentifier:@"com.insanj.dated"];
 	return %orig() || [[settings objectForKey:@"allmessages"] boolValue];
 }
 
 %end
 
-%end // %group Ancient
+%end // %group Legacy
 
-/***************************** Theos Constructor ******************************/
-
+/*
+       _..._             .-'''-.             
+    .-'_..._''.         '   _    \           
+  .' .'      '.\      /   /` '.   \          
+ / .'                .   |     \  '          
+. '               .| |   '      |  '.-,.--.  
+| |             .' |_\    \     / / |  .-. | 
+| |           .'     |`.   ` ..' /  | |  | | 
+. '          '--.  .-'   '-...-'`   | |  | | 
+ \ '.          .|  |                | |  '-  
+  '. `._____.-'/|  |                | |      
+    `-.______ / |  '.'              | |      
+             `  |   /               |_|      
+                `'-'                         
+*/
 %ctor {
-	if (MODERN_IOS && DATED_ENABLED) {
-		NSLog(@"[Dated] Injecting modern hooks into ChatKit...");
-		%init(Modern);
-	}
+	BOOL datedEnabled = ![[[HBPreferences preferencesForIdentifier:@"com.insanj.dated"] objectForKey:@"disabled"] boolValue];
 
-	else if (DATED_ENABLED){
-		NSLog(@"[Dated] Injecting ancient hooks into ChatKit...");
-		%init(Ancient);
+	if (datedEnabled) {
+		if (MODERN_IOS) {
+			%init(Modern);
+		}
+
+		else {
+			%init(Legacy);
+		}
 	}
 }

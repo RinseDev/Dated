@@ -15,4 +15,4 @@ SUBPROJECTS += DatedPrefs
 include $(THEOS_MAKE_PATH)/aggregate.mk
 
 internal-after-install::
-	install.exec "killall -9 backboardd"
+	install.exec "killall -9 MobileSMS; killall -9 Preferences"
