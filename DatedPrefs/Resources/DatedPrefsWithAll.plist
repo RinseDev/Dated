@@ -132,24 +132,24 @@
 		</dict>
 
         <dict>
-            <key>cell</key> 		 <string>PSButtonCell</string>
-            <key>label</key> 	    <string>Developer (@insanj)</string>
-            <key>icon</key> 		 <string>twitter.png</string>
-            <key>action</key> 	   <string>insanj</string>
+            <key>cell</key>          <string>PSButtonCell</string>
+            <key>label</key>        <string>Main Developer</string>
+            <key>icon</key>          <string>twitter.png</string>
+            <key>action</key>      <string>twitterTapped</string>
         </dict>
 
         <dict>
-            <key>cell</key> 		 <string>PSButtonCell</string>
-            <key>label</key> 	    <string>Source (Github)</string>
-            <key>icon</key> 		 <string>safari.png</string>
-            <key>action</key> 	   <string>website</string>
+            <key>cell</key>          <string>PSButtonCell</string>
+            <key>label</key>        <string>Github</string>
+            <key>icon</key>          <string>safari.png</string>
+            <key>action</key>      <string>githubTapped</string>
         </dict>
 
         <dict>
-            <key>cell</key>	          <string>PSGroupCell</string>
-            <key>footerAlignment</key>   <integer>1</integer>
-            <key>footerText</key>		<string>© 2014-2015 Rinse Developer Collective</string>
+            <key>cell</key>           <string>PSGroupCell</string>
+            <key>footerText</key>       <string>© 2014-2015 Rinse Developer Collective</string>
         </dict>
+
 
 	</array>
 	<key>title</key>	<string>Dated</string>

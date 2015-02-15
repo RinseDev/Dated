@@ -189,7 +189,7 @@ _________   _...._                    __.....__
 	}
 }
 
-- (void)developerTapped {
+- (void)githubTapped {
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/rinsedev"]];
 }
 

@@ -125,14 +125,14 @@
             <key>cell</key> 		 <string>PSButtonCell</string>
             <key>label</key> 	    <string>Main Developer</string>
             <key>icon</key> 		 <string>twitter.png</string>
-            <key>action</key> 	   <string>developerTapped</string>
+            <key>action</key> 	   <string>twitterTapped</string>
         </dict>
 
         <dict>
             <key>cell</key> 		 <string>PSButtonCell</string>
             <key>label</key> 	    <string>Github</string>
             <key>icon</key> 		 <string>safari.png</string>
-            <key>action</key> 	   <string>sourceTapped</string>
+            <key>action</key> 	   <string>githubTapped</string>
         </dict>
 
         <dict>
