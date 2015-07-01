@@ -171,13 +171,6 @@ _________   _...._                    __.....__
 		[self.navigationController presentViewController:viewController animated:YES completion:NULL];
 	}
 
-	else if (%c(TWTweetComposeViewController) && [TWTweetComposeViewController canSendTweet]) {
-		TWTweetComposeViewController *viewController = [[TWTweetComposeViewController alloc] init];
-		viewController.initialText = text;
-		[viewController addURL:url];
-		[self.navigationController presentViewController:viewController animated:YES completion:NULL];
-	}
-
 	else {
 		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://twitter.com/intent/tweet?text=%@%%20%@", URL_ENCODE(text), URL_ENCODE(url.absoluteString)]]];
 	}
